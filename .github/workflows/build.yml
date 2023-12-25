@@ -29,5 +29,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-         name: my-apk-file
+         name: babby-paint-apk-file
          path: ~/*.apk
