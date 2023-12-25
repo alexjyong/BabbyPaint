@@ -2,10 +2,17 @@
 <widget id="com.example.babbypaint" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>BabbyPaint</name>
     <description>Sample Apache Cordova App</description>
-    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
-        Apache Cordova Team
+    <author email="alexjyong@gmail.com" href="https://alexjyong.dev">
+        Alex Yong
     </author>
     <content src="index.html" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
+    <platform name="android">
+    <icon src="res/icon/android/mipmap-mdpi/icon.png" density="mdpi"/>
+    <icon src="res/icon/android/mipmap-hdpi/icon.png" density="hdpi"/>
+    <icon src="res/icon/android/mipmap-xhdpi/icon.png" density="xhdpi"/>
+    <icon src="res/icon/android/mipmap-xxhdpi/icon.png" density="xxhdpi"/>
+    <icon src="res/icon/android/mipmap-xxxhdpi/icon.png" density="xxxhdpi"/>
+  </platform>
 </widget>
