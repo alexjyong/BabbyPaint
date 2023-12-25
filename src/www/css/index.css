@@ -32,6 +32,7 @@ canvas {
 	border-right: 1px solid #E0E0E0;
 	border-top: 1px solid #E0E0E0;
 	box-shadow: 0 4px 0 0 #E0E0E0;
+	cursor: url(../img/cursor.png), crosshair;
 }
 
 /* CONTROLS (NEW COLORS)
@@ -69,15 +70,58 @@ ul li {
 }
 
 .red {
-	background: #E74C3C;
+    background: #E74C3C;
 }
-
-.blue {
-	background: #3498DB;
+.pink {
+    background: #FFC0CB;
 }
-
+.orange {
+    background: #F39C12;
+}
 .yellow {
-	background: #F1C40F;
+    background: #F1C40F;
+}
+.lime {
+    background: #CDDC39;
+}
+.green {
+    background: #68B25B;
+}
+.mint {
+    background: #3EB489;
+}
+.teal {
+    background: #1ABC9C;
+}
+.cyan {
+    background: #17A2B8;
+}
+.blue {
+    background: #3498DB;
+}
+.indigo {
+    background: #6610F2;
+}
+.purple {
+    background: #8801e2;
+}
+.violet {
+    background: #8E44AD;
+}
+.magenta {
+    background: #FF00FF;
+}
+.brown {
+    background: #8B4513;
+}
+.grey {
+    background: #95A5A6;
+}
+.black {
+    background: #34495E;
+}
+.white {
+    background: #FFFFFF;
 }
 
 .selected {

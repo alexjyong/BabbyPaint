@@ -19,7 +19,7 @@
 
 // Wait for the deviceready event before using any of Cordova's device APIs.
 // See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
-document.addEventListener('deviceready', onDeviceReady, false);
+//document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
     // Cordova is now initialized. Have fun!
@@ -36,7 +36,7 @@ var mouseDown = false;
 
 // When clicking on colors items
 $(".controls").on("click", "li", function () {
-    //  Deselect aibling elements
+    //  Deselect sibling elements
     $(this).siblings().removeClass("selected");
     //  Select clicked element
     $(this).addClass("selected");
@@ -48,6 +48,7 @@ $(".controls").on("click", "li", function () {
 
 
 // When New color is pressed by user
+/*
 $("#revealColorSelect").click(function () {
     // Show color select or hide the color select
     changeColor();
@@ -61,12 +62,14 @@ function changeColor() {
     var b = $("#blue").val();
     $("#newColor").css("background-color", "rgb(" + r + "," + g + "," + b + ")");
 }
+ */
 
 // When new color sliders change
-$("input[type=range]").change(changeColor);
+//$("input[type=range]").change(changeColor);
 
 
 // When add color is pressed
+/*
 $("#addNewColor").click(function () {
     // Append the colors to the controls
     var $newColor = $("<li></li>");
@@ -74,7 +77,7 @@ $("#addNewColor").click(function () {
     $(".controls ul").append($newColor);
     // Select the new added color
     $newColor.click();
-});
+}); */
 
 // On mouse events on the canvas
 $canvas.mousedown(function (e) {
