@@ -28,33 +28,33 @@ function onDeviceReady() {
     document.getElementById('deviceready').classList.add('ready');
 }
 
-var colour = $(".selected").css("background-color");
+var color = $(".selected").css("background-color");
 var $canvas = $("canvas");
 var context = $canvas[0].getContext("2d");
 var lastEvent;
 var mouseDown = false;
 
-// When clicking on colours items
+// When clicking on colors items
 $(".controls").on("click", "li", function () {
     //  Deselect aibling elements
     $(this).siblings().removeClass("selected");
     //  Select clicked element
     $(this).addClass("selected");
 
-    // Cache current colour
-    colour = $(this).css("background-color");
+    // Cache current color
+    color = $(this).css("background-color");
 
 });
 
 
-// When New colour is pressed by user
+// When New color is pressed by user
 $("#revealColorSelect").click(function () {
-    // Show colour select or hide the color select
+    // Show color select or hide the color select
     changeColor();
     $("#colorSelect").toggle();
 });
 
-// Update the new colour span
+// Update the new color span
 function changeColor() {
     var r = $("#red").val();
     var g = $("#green").val();
@@ -62,17 +62,17 @@ function changeColor() {
     $("#newColor").css("background-color", "rgb(" + r + "," + g + "," + b + ")");
 }
 
-// When new colour sliders change
+// When new color sliders change
 $("input[type=range]").change(changeColor);
 
 
-// When add colour is pressed
+// When add color is pressed
 $("#addNewColor").click(function () {
-    // Append the colours to the controls
+    // Append the colors to the controls
     var $newColor = $("<li></li>");
     $newColor.css("background-color", $("#newColor").css("background-color"));
     $(".controls ul").append($newColor);
-    // Select the new added colour
+    // Select the new added color
     $newColor.click();
 });
 
@@ -86,7 +86,7 @@ $canvas.mousedown(function (e) {
         context.beginPath();
         context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
         context.lineTo(e.offsetX, e.offsetY);
-        context.strokeStyle = colour;
+        context.strokeStyle = color;
         context.lineWidth = 5;
         context.lineCap = 'round';
         context.stroke();

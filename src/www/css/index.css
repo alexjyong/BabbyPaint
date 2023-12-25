@@ -32,10 +32,9 @@ canvas {
 	border-right: 1px solid #E0E0E0;
 	border-top: 1px solid #E0E0E0;
 	box-shadow: 0 4px 0 0 #E0E0E0;
-	cursor: url(../img/cursor.png), crosshair;
 }
 
-/* CONTROLS (NEW COLOURS)
+/* CONTROLS (NEW COLORS)
 =======================*/
 
 .controls {
