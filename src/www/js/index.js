@@ -9,6 +9,30 @@ var context = $canvas[0].getContext("2d");
 var lastEvent;
 var mouseDown = false;
 
+// Assuming your lock button has an ID of 'lockButton'
+$('#lockButton').on('click', function() {
+    cordova.plugins.screenPinning.enterPinnedMode(
+        function () {
+            console.log("Pinned mode activated!");
+        },
+        function (errorMessage) {
+            console.log("Error activating pinned mode:", errorMessage);
+        }
+    );
+});
+
+// Assuming your unlock button has an ID of 'unlockButton'
+$('#unlockButton').on('click', function() {
+    cordova.plugins.screenPinning.exitPinnedMode(
+        function () {
+            console.log("Pinned mode deactivated!");
+        },
+        function (errorMessage) {
+            console.log("Error deactivating pinned mode:", errorMessage);
+        }
+    );
+});
+
 // When clicking on colors items
 $(".controls").on("click", "li", function () {
     //  Deselect sibling elements
