@@ -9,28 +9,45 @@ var context = $canvas[0].getContext("2d");
 var lastEvent;
 var mouseDown = false;
 
-// Assuming your lock button has an ID of 'lockButton'
-$('#lockButton').on('click', function() {
-    cordova.plugins.screenPinning.enterPinnedMode(
-        function () {
-            console.log("Pinned mode activated!");
-        },
-        function (errorMessage) {
-            console.log("Error activating pinned mode:", errorMessage);
-        }
-    );
-});
+var lockButton = $('#lockButton');
+var isLocked = false;
+var tapCount = 0;
+var lastTap = 0;
 
-// Assuming your unlock button has an ID of 'unlockButton'
-$('#unlockButton').on('click', function() {
-    cordova.plugins.screenPinning.exitPinnedMode(
-        function () {
-            console.log("Pinned mode deactivated!");
-        },
-        function (errorMessage) {
-            console.log("Error deactivating pinned mode:", errorMessage);
+lockButton.on('click', function() {
+    if (!isLocked) {
+        cordova.plugins.screenPinning.enterPinnedMode(
+            function () {
+                console.log("Pinned mode activated!");
+                isLocked = true;
+                lockButton.text('Tap 4 times quickly to unlock'); // Update button text
+            },
+            function (errorMessage) {
+                console.log("Error activating pinned mode:", errorMessage);
+            }
+        );
+    } else {
+        var currentTime = Date.now();
+        if (currentTime - lastTap < 500) { // Check for quick succession
+            tapCount++;
+            if (tapCount >= 4) {
+                cordova.plugins.screenPinning.exitPinnedMode(
+                    function () {
+                        console.log("Pinned mode deactivated!");
+                        isLocked = false;
+                        tapCount = 0;
+                        lockButton.text('Lock'); // Reset button text
+                    },
+                    function (errorMessage) {
+                        console.log("Error deactivating pinned mode:", errorMessage);
+                    }
+                );
+            }
+        } else {
+            tapCount = 1; // Too slow, start over
         }
-    );
+        lastTap = currentTime;
+    }
 });
 
 // When clicking on colors items
