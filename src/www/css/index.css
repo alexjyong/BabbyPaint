@@ -152,7 +152,7 @@ button {
 	padding: 5px 20px;
 	width: 160px;
 }
-#clear {
+.utility {
 	border: none;
 	border-radius: 5px;
 	margin: 10px auto;

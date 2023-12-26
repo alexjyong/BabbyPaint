@@ -7,12 +7,11 @@
 <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="css/index.css">
-<title>Drawing App</title>
+<title>Babby Paint! 🖌️</title>
 <link rel="stylesheet" href="css/index.css" type="text/css" media="screen" title="no title">
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
 </head>
 <body>
-  <h2>Babby Paint! 🖌️</h2>
 <canvas	width="1000" height="350" id="mainCanvas"></canvas>
 <div class="controls">
 	<ul>
@@ -35,9 +34,9 @@
         <li class="black"></li>
         <li class="white"></li>
 	</ul>
-	<button id="clear" onclick='clear_canvas_width ()'>Clear Canvas</button>
-	<button id="lockButton">Lock</button>
-	<button id="unlockButton">Unlock</button>
+	<button class="utility" id="clear" onclick='clear_canvas_width ()'>Clear Canvas</button>
+	<button class="utility" id="lockButton">Lock</button>
+	<button class="utility" id="unlockButton">Unlock</button>
 	<!-- <button id="revealColorSelect">New Color</button>
 	<div id="colorSelect">
 		<span id="newColor"></span>
