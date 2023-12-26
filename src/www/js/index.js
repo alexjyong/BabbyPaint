@@ -128,38 +128,3 @@ function clear_canvas_width() {
     s.width = 10;
     s.width = w;
 }
-
-
-//old code from original application i might add in later
-
-// When New color is pressed by user
-/*
-$("#revealColorSelect").click(function () {
-    // Show color select or hide the color select
-    changeColor();
-    $("#colorSelect").toggle();
-});
-
-// Update the new color span
-function changeColor() {
-    var r = $("#red").val();
-    var g = $("#green").val();
-    var b = $("#blue").val();
-    $("#newColor").css("background-color", "rgb(" + r + "," + g + "," + b + ")");
-}
- */
-
-// When new color sliders change
-//$("input[type=range]").change(changeColor);
-
-
-// When add color is pressed
-/*
-$("#addNewColor").click(function () {
-    // Append the colors to the controls
-    var $newColor = $("<li></li>");
-    $newColor.css("background-color", $("#newColor").css("background-color"));
-    $(".controls ul").append($newColor);
-    // Select the new added color
-    $newColor.click();
-}); */
