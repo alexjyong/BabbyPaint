@@ -229,7 +229,8 @@ button {
 
 
 /* Responsive adjustments */
-@media only screen and (max-width: 768px) {
+
+/* @media only screen and (max-width: 768px) {
     body {
         font-size: 14px;
     }
@@ -240,8 +241,8 @@ button {
     }
 
     canvas {
-        /* Adjust canvas size for smaller screens */
+        //Adjust canvas size for smaller screens 
         max-width: 100%;
         height: auto;
     }
-}
+} */
