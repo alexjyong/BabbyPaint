@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Paint Application</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Simple Paint Application</h2>
+        <div class="row">
+            <!-- Color Buttons -->
+            <div class="col">
+                <div id="colorPalette">
+                    <!-- Color buttons will be inserted here -->
+                </div>
+            </div>
+            <div class="col">
+                <!-- Lock Button -->
+                <button id="lockButton" class="btn btn-warning btn-lg">Lock</button>
+                <!-- Clear Button -->
+                <button id="clearBtn" class="btn btn-danger btn-lg">Clear</button>
+            </div>
+        </div>
+        <!-- Canvas for Drawing -->
+        <canvas id="drawingCanvas" width="800" height="500" class="border mt-3"></canvas>
+    </div>
+
+    <!-- Include Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Custom Script for Painting Logic -->
+    <script src="paint.js"></script>
+</body>
+</html>

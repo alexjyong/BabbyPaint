@@ -1,0 +1,93 @@
+/* Base styling for the body to apply a light and cheerful background */
+body {
+    background-color: #fafafa; /* Soft background color */
+    font-family: 'Comic Neue', cursive; /* Fun and readable font */
+    color: #333; /* Slightly softened text color for better readability */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Styling for the main container to center content and provide padding */
+.container {
+    padding-top: 20px;
+    text-align: center; /* Center align the container contents */
+}
+
+/* Header styles for a fun look */
+h2 {
+    font-size: 2.5rem; /* Large and legible title */
+    color: #4a4a4a; /* Dark grey color for contrast */
+    margin-bottom: 30px; /* Spacing below the title */
+}
+
+/* Styling for color buttons to be large, circular, and with a shadow for depth */
+.color-button {
+    width: 60px; /* Large size for easy touch */
+    height: 60px; /* Large size for easy touch */
+    border-radius: 50%; /* Circular shape */
+    display: inline-block; /* Align side by side */
+    margin: 10px; /* Space out buttons */
+    cursor: pointer; /* Indicates an interactive element */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    border: 3px solid white; /* White border to make buttons pop against background */
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth animation for feedback */
+}
+
+.color-button:active {
+    transform: scale(0.9); /* Shrink effect when pressed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Less shadow when pressed */
+}
+
+/* Highlight the selected color button */
+.color-button.selected {
+    transform: translateY(-10px) scale(1.1); /* Raise and enlarge the selected button */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Larger shadow for prominence */
+}
+
+/* Custom styles for the action buttons (Lock/Clear) */
+.btn {
+    font-size: 1.5rem; /* Large font size for readability */
+    padding: 15px 30px; /* Padding for larger, more touch-friendly buttons */
+    margin: 5px; /* Spacing between buttons */
+    border-radius: 8px; /* Rounded corners for a softer look */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Consistent shadow with color buttons */
+}
+
+/* Slight scale down effect on action buttons when active/pressed */
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* Full-width responsive canvas with appropriate max-height */
+canvas {
+    max-width: 100%; /* Ensures canvas is not wider than the screen */
+    max-height: 60vh; /* Limits the height to be a portion of the viewport height */
+    border: 2px solid #ddd; /* Light grey border for definition */
+    border-radius: 8px; /* Rounded corners for a friendly touch */
+    background-color: #ffffff; /* White background for the drawing canvas */
+}
+
+/* Use media queries to adjust the layout on smaller screens */
+@media (max-width: 767px) {
+    /* Scale down the header text on small screens */
+    h2 {
+        font-size: 2rem;
+    }
+
+    /* Adjust button sizes for smaller screens to maintain touch-friendliness */
+    .btn, .color-button {
+        width: 50px; /* Slightly smaller buttons on small screens */
+        height: 50px; /* Slightly smaller buttons on small screens */
+        padding: 10px 20px; /* Adjust padding for action buttons */
+        font-size: 1.2rem; /* Adjust font size for action buttons */
+    }
+}
+
+/* Additional aesthetic touches */
+#colorPalette {
+    padding: 10px;
+    margin-bottom: 20px; /* Spacing below the palette */
+    border-radius: 15px; /* Rounded corners for the palette container */
+    background-size: cover; /* Cover the entire palette area with the background */
+}
