@@ -1,130 +1,136 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const canvas = document.getElementById('drawingCanvas');
+    const context = canvas.getContext('2d');
+    const clearBtn = document.getElementById('clearBtn');
+    const lockButton = document.getElementById('lockButton');
+    let drawing = false;
+    let currentColor = 'black';
+    let isLocked = false;
+    let tapCount = 0;
+    let lastTap = 0;
+    let selectedColorButton = null;
 
-// Wait for the deviceready event before using any of Cordova's device APIs.
-// See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
-//document.addEventListener('deviceready', onDeviceReady, false);
+    // Set up the colors for the buttons
+    const colors = [
+        'red', 'pink', 'orange', 'yellow', 'lime', 'green', 'mint',
+        'teal', 'cyan', 'blue', 'indigo', 'purple', 'violet',
+        'magenta', 'brown', 'grey', 'black', 'white'
+    ];
 
-var color = $(".selected").css("background-color");
-var $canvas = $("canvas");
-var context = $canvas[0].getContext("2d");
-var lastEvent;
-var mouseDown = false;
-
-var lockButton = $('#lockButton');
-var isLocked = false;
-var tapCount = 0;
-var lastTap = 0;
-
-lockButton.on('click', function() {
-    if (!isLocked) {
-        cordova.plugins.screenPinning.enterPinnedMode(
-            function () {
-                console.log("Pinned mode activated!");
-                isLocked = true;
-                lockButton.text('Tap 4 times quickly to unlock'); // Update button text
-            },
-            function (errorMessage) {
-                console.log("Error activating pinned mode:", errorMessage);
+    // Create color buttons
+    const colorPalette = document.getElementById('colorPalette');
+    colors.forEach(color => {
+        const colorButton = document.createElement('div');
+        colorButton.classList.add('color-button');
+        colorButton.style.backgroundColor = color;
+        colorButton.addEventListener('click', function() {
+            currentColor = color;
+            if (selectedColorButton) {
+                selectedColorButton.classList.remove('selected');
             }
-        );
-    } else {
-        var currentTime = Date.now();
-        if (currentTime - lastTap < 500) { // Check for quick succession
-            tapCount++;
-            if (tapCount >= 4) {
-                cordova.plugins.screenPinning.exitPinnedMode(
-                    function () {
-                        console.log("Pinned mode deactivated!");
-                        isLocked = false;
-                        tapCount = 0;
-                        lockButton.text('Lock'); // Reset button text
-                    },
-                    function (errorMessage) {
-                        console.log("Error deactivating pinned mode:", errorMessage);
-                    }
-                );
-            }
-        } else {
-            tapCount = 1; // Too slow, start over
+            colorButton.classList.add('selected');
+            selectedColorButton = colorButton;
+        });
+        colorPalette.appendChild(colorButton);
+
+        // Set the default selected color button
+        if (color === 'black') {
+            colorButton.classList.add('selected');
+            selectedColorButton = colorButton;
         }
-        lastTap = currentTime;
-    }
-});
+    });
 
-// When clicking on colors items
-$(".controls").on("click", "li", function () {
-    //  Deselect sibling elements
-    $(this).siblings().removeClass("selected");
-    //  Select clicked element
-    $(this).addClass("selected");
-
-    // Cache current color
-    color = $(this).css("background-color");
-
-});
-
-// Function to get the touch position
-function getTouchPos(touchEvent) {
-    var rect = $canvas[0].getBoundingClientRect();
-    return {
-      offsetX: touchEvent.touches[0].clientX - rect.left,
-      offsetY: touchEvent.touches[0].clientY - rect.top
-    };
-  }
-  
-// On touch events on the canvas
-$canvas.on('touchstart', function (e) {
-    e.preventDefault(); // Prevent scrolling when touching the canvas
-    var touchPos = getTouchPos(e.originalEvent);
-    lastEvent = touchPos;
-    mouseDown = true;
-}).on('touchmove', function (e) {
-    e.preventDefault(); // Prevent scrolling when touching the canvas
-    if (mouseDown) {
-        var touchPos = getTouchPos(e.originalEvent);
-        context.beginPath();
-        context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
-        context.lineTo(touchPos.offsetX, touchPos.offsetY);
-        context.strokeStyle = color;
-        context.lineWidth = 5;
+    function draw(e) {
+        if (!drawing) return;
+        context.lineWidth = 3;
         context.lineCap = 'round';
+        context.strokeStyle = currentColor;
+
+        let clientX, clientY;
+        if (e.touches) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        context.lineTo(clientX - canvas.offsetLeft, clientY - canvas.offsetTop);
         context.stroke();
-        lastEvent = touchPos;
-    }
-}).on('touchend', function (e) {
-    mouseDown = false;
-});
-
-$canvas.on('touchcancel', function () {
-    mouseDown = false;
-});
-  
-
-// On mouse events on the canvas
-$canvas.mousedown(function (e) {
-    lastEvent = e;
-    mouseDown = true;
-}).mousemove(function (e) {
-    // Draw lines
-    if (mouseDown) {
         context.beginPath();
-        context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
-        context.lineTo(e.offsetX, e.offsetY);
-        context.strokeStyle = color;
-        context.lineWidth = 5;
-        context.lineCap = 'round';
-        context.stroke();
-        lastEvent = e;
+        context.moveTo(clientX - canvas.offsetLeft, clientY - canvas.offsetTop);
     }
-}).mouseup(function () {
-    mouseDown = false;
-}).mouseleave(function () {
-    $canvas.mouseup();
-});
 
-// Clear the canvas when button is clicked
-function clear_canvas_width() {
-    var s = document.getElementById("mainCanvas");
-    var w = s.width;
-    s.width = 10;
-    s.width = w;
-}
+    function stopDrawing() {
+        drawing = false;
+        context.beginPath();
+    }
+
+    function startDrawing(e) {
+        drawing = true;
+        draw(e);
+    }
+
+    // Mouse Event Listeners
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    // Touch Event Listeners
+    canvas.addEventListener('touchstart', startDrawing, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', stopDrawing, { passive: false });
+
+    // Prevent scrolling on touch events
+    canvas.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+
+    // Clear Canvas
+    clearBtn.addEventListener('click', () => context.clearRect(0, 0, canvas.width, canvas.height));
+
+    // Lock Button Logic
+    lockButton.addEventListener('click', function() {
+        if (!isLocked) {
+            // Insert your actual screen pinning code here
+            console.log("Pinned mode activated!");
+            isLocked = true;
+            lockButton.textContent = 'Tap 4 times quickly to unlock'; // Update button text
+        } else {
+            const currentTime = Date.now();
+            if (currentTime - lastTap < 500) { // Check for quick succession
+                tapCount++;
+                if (tapCount >= 4) {
+                    // Insert your actual screen unpinned code here
+                    console.log("Pinned mode deactivated!");
+                    isLocked = false;
+                    tapCount = 0;
+                    lockButton.textContent = 'Lock'; // Reset button text
+                }
+            } else {
+                tapCount = 1; // Too slow, start over
+            }
+            lastTap = currentTime;
+        }
+    });
+
+    // Set up canvas size for better mobile fit
+    function setupCanvas() {
+        const maxWidth = window.innerWidth;
+        const maxHeight = window.innerHeight - (colorPalette.offsetHeight + lockButton.offsetHeight + 20); // Adjust for UI elements
+        const aspectRatio = 3 / 2; // Maintain a 3:2 aspect ratio
+        let canvasWidth = maxWidth;
+        let canvasHeight = canvasWidth / aspectRatio;
+
+        if (canvasHeight > maxHeight) {
+            canvasHeight = maxHeight;
+            canvasWidth = canvasHeight * aspectRatio;
+        }
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+    }
+
+    // Initial setup and setup on resize
+    window.addEventListener('load', setupCanvas);
+    window.addEventListener('resize', setupCanvas);
+});

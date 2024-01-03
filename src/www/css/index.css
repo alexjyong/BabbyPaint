@@ -1,174 +1,93 @@
-* {
-	margin: 0;
-	padding: 0;
-}
-
+/* Base styling for the body to apply a light and cheerful background */
 body {
-	background: #F5F5F5;
-	font-family: sans-serif;
-    color: black;
-	height: 100%;
-	width: 100%;
+    background-color: #fafafa; /* Soft background color */
+    font-family: 'Comic Neue', cursive; /* Fun and readable font */
+    color: #333; /* Slightly softened text color for better readability */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
+/* Styling for the main container to center content and provide padding */
+.container {
+    padding-top: 20px;
+    text-align: center; /* Center align the container contents */
+}
+
+/* Header styles for a fun look */
 h2 {
-  text-align: center;
-  margin: 20px;
-  font-family: 'Open Sans', sans-serif;
+    font-size: 2.5rem; /* Large and legible title */
+    color: #4a4a4a; /* Dark grey color for contrast */
+    margin-bottom: 30px; /* Spacing below the title */
 }
 
-.paint {
-  padding-top: 2px;
+/* Styling for color buttons to be large, circular, and with a shadow for depth */
+.color-button {
+    width: 60px; /* Large size for easy touch */
+    height: 60px; /* Large size for easy touch */
+    border-radius: 50%; /* Circular shape */
+    display: inline-block; /* Align side by side */
+    margin: 10px; /* Space out buttons */
+    cursor: pointer; /* Indicates an interactive element */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    border: 3px solid white; /* White border to make buttons pop against background */
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth animation for feedback */
 }
 
-/* CANVAS STYLING
-===================*/
+.color-button:active {
+    transform: scale(0.9); /* Shrink effect when pressed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Less shadow when pressed */
+}
 
+/* Highlight the selected color button */
+.color-button.selected {
+    transform: translateY(-10px) scale(1.1); /* Raise and enlarge the selected button */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Larger shadow for prominence */
+}
+
+/* Custom styles for the action buttons (Lock/Clear) */
+.btn {
+    font-size: 1.5rem; /* Large font size for readability */
+    padding: 15px 30px; /* Padding for larger, more touch-friendly buttons */
+    margin: 5px; /* Spacing between buttons */
+    border-radius: 8px; /* Rounded corners for a softer look */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Consistent shadow with color buttons */
+}
+
+/* Slight scale down effect on action buttons when active/pressed */
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* Full-width responsive canvas with appropriate max-height */
 canvas {
-	background: #FFF;
-	display: block;
-	margin: 40px auto 10px;
-	border-radius: 5px;
-	border-left: 1px solid #E0E0E0;
-	border-right: 1px solid #E0E0E0;
-	border-top: 1px solid #E0E0E0;
-	box-shadow: 0 4px 0 0 #E0E0E0;
-	cursor: url(../img/cursor.png), crosshair;
+    max-width: 100%; /* Ensures canvas is not wider than the screen */
+    max-height: 60vh; /* Limits the height to be a portion of the viewport height */
+    border: 2px solid #ddd; /* Light grey border for definition */
+    border-radius: 8px; /* Rounded corners for a friendly touch */
+    background-color: #ffffff; /* White background for the drawing canvas */
 }
 
-/* CONTROLS (NEW COLORS)
-=======================*/
-
-.controls {
-	min-height: 60px;
-	margin: 0 auto;
-	width: 600px;
-	border-radius: 5px;
-	overflow: hidden;
-}
-ul {
-	list-style:none;
-	margin: 0;
-	float: 	left;
-	padding: 10px 0 20px;
-	width: 100%;
-	text-align: center;
-}
-
-ul li, #newColor {
-	display:block;
-	height: 54px;
-	width: 54px;
-	border-radius: 60px;
-	cursor: pointer;
-	border: 0;
-	box-shadow: 0 3px 0 0 #E0E0E0;
-}
-
-ul li {
-	display: inline-block;
-	margin: 0 5px 10px;
-}
-
-.red {
-    background: #E74C3C;
-}
-.pink {
-    background: #FFC0CB;
-}
-.orange {
-    background: #F39C12;
-}
-.yellow {
-    background: #F1C40F;
-}
-.lime {
-    background: #CDDC39;
-}
-.green {
-    background: #68B25B;
-}
-.mint {
-    background: #3EB489;
-}
-.teal {
-    background: #1ABC9C;
-}
-.cyan {
-    background: #17A2B8;
-}
-.blue {
-    background: #3498DB;
-}
-.indigo {
-    background: #6610F2;
-}
-.purple {
-    background: #8801e2;
-}
-.violet {
-    background: #8E44AD;
-}
-.magenta {
-    background: #FF00FF;
-}
-.brown {
-    background: #8B4513;
-}
-.grey {
-    background: #95A5A6;
-}
-.black {
-    background: #34495E;
-}
-.white {
-    background: #FFFFFF;
-}
-
-.selected {
-	border: 7px solid #68B25B;
-	width: 40px;
-	height: 40px;
-}
-
-/* BUTTON STYLES
-==============*/
-
-button {
-	background: #68B25B;
-	box-shadow: 0 3px 0 0 #6A845F;
-	color: #fff;
-	outline: none;
-	cursor: pointer;
-	text-shadow: 0 1px #6A845F;
-	display: block;
-	font-size: 16px;
-	line-height: 40px;
-}
-.utility {
-	border: none;
-	border-radius: 5px;
-	margin: 10px auto;
-	padding: 0 20px;
-	width: 160px;
-	height: 40px;
-}
-
-/* Responsive adjustments */
-
-/* @media only screen and (max-width: 768px) {
-    body {
-        font-size: 14px;
+/* Use media queries to adjust the layout on smaller screens */
+@media (max-width: 767px) {
+    /* Scale down the header text on small screens */
+    h2 {
+        font-size: 2rem;
     }
 
-    .button, .color-selector {
-        padding: 10px;
-        font-size: 12px;
+    /* Adjust button sizes for smaller screens to maintain touch-friendliness */
+    .btn, .color-button {
+        width: 50px; /* Slightly smaller buttons on small screens */
+        height: 50px; /* Slightly smaller buttons on small screens */
+        padding: 10px 20px; /* Adjust padding for action buttons */
+        font-size: 1.2rem; /* Adjust font size for action buttons */
     }
+}
 
-    canvas {
-        //Adjust canvas size for smaller screens 
-        max-width: 100%;
-        height: auto;
-    }
-} */
+/* Additional aesthetic touches */
+#colorPalette {
+    padding: 10px;
+    margin-bottom: 20px; /* Spacing below the palette */
+    border-radius: 15px; /* Rounded corners for the palette container */
+    background-size: cover; /* Cover the entire palette area with the background */
+}
