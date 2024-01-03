@@ -1,5 +1,5 @@
 {
-  "name": "com.example.babbypaint",
+  "name": "dev.alexjyong.babbypaint",
   "displayName": "BabbyPaint",
   "version": "1.0.0",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
