@@ -74,12 +74,13 @@ RUN apt-get update && apt-get install -y curl gnupg2 lsb-release && \
 ENV CORDOVA_VERSION=12.0.0 \
     CORDOVA_BUILD_TOOLS_VERSION=33.0.2
 
-WORKDIR "/tmp"
+WORKDIR /tmp
 
-RUN while true; do echo 'y'; sleep 2; done | sdkmanager "build-tools;${CORDOVA_BUILD_TOOLS_VERSION}" && \
-    npm i -g --unsafe-perm cordova@${CORDOVA_VERSION} && \
+RUN npm i -g --unsafe-perm cordova@${CORDOVA_VERSION} && \
     cordova -v && \
-    cd /tmp && \
+    while true; do echo 'y'; sleep 2; done | sdkmanager "build-tools;${CORDOVA_BUILD_TOOLS_VERSION}"
+
+RUN cd /tmp && \
     cordova create myApp com.myCompany.myApp myApp && \
     cd myApp && \
     cordova plugin add cordova-plugin-camera --save && \
