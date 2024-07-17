@@ -14,21 +14,30 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     steps:
-    
+      # Check out the code
       - uses: actions/checkout@v4
-      - name: prepare environment
-        run: |
-         rm -rf .github
-         cd src
-         docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova cordova platform add android;
-         docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova cordova plugin add cordova-plugin-screen-pinning 
-         docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova cordova build
-                  
-      - name: move file up
-        run: |
-         cp "$(find . -name '*.apk')" ~/
 
+      # Build the custom Docker image
+      - name: Build custom Docker image
+        run: |
+          docker build -t cordova-image .
+
+      # Prepare environment and build the Cordova app
+      - name: Prepare environment
+        run: |
+          rm -rf .github
+          cd src
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova platform add android
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova plugin add cordova-plugin-screen-pinning
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova build
+
+      # Move the built APK file to a known location
+      - name: Move file up
+        run: |
+          cp "$(find . -name '*.apk')" ~/
+
+      # Upload the built APK file as an artifact
       - uses: actions/upload-artifact@v4
         with:
-         name: babby-paint-apk-file
-         path: ~/*.apk
+          name: babby-paint-apk-file
+          path: ~/*.apk
