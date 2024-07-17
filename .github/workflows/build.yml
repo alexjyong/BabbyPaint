@@ -17,19 +17,23 @@ jobs:
       # Check out the code
       - uses: actions/checkout@v4
 
-      # Build the custom Docker image
-      - name: Build custom Docker image
-        run: |
-          docker build -t cordova-image .
+      # # Build the custom Docker image
+      # - name: Build custom Docker image
+      #   run: |
+      #     docker build -t cordova-image .
 
       # Prepare environment and build the Cordova app
       - name: Prepare environment
         run: |
           rm -rf .github
           cd src
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova platform add android
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova plugin add cordova-plugin-screen-pinning
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova build
+          docker pull beevelop/cordova:v2023.10.1
+          docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova:v2023.10.1 cordova platform add android;
+          docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova:v2023.10.1 cordova plugin add cordova-plugin-screen-pinning 
+          docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova:v2023.10.1 cordova build
+          # docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova platform add android
+          # docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova plugin add cordova-plugin-screen-pinning
+          # docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image cordova build
 
       # Move the built APK file to a known location
       - name: Move file up
