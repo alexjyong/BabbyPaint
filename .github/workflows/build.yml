@@ -1,34 +1,44 @@
-# This is a basic workflow that is manually triggered
-
 name: Build Android Version
 
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   buildEnvAndSetUpApp:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    steps:
-    
-      - uses: actions/checkout@v4
-      - name: prepare environment
-        run: |
-         rm -rf .github
-         cd src
-         docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova cordova platform add android;
-         docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova cordova plugin add cordova-plugin-screen-pinning 
-         docker run --rm -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova cordova build
-                  
-      - name: move file up
-        run: |
-         cp "$(find . -name '*.apk')" ~/
 
+    steps:
+      # Check out the code
+      - uses: actions/checkout@v4
+
+      # Build the custom Docker image
+      - name: Build custom Docker image
+        run: |
+          docker build --cache-from cordova-image:latest -t cordova-image .
+
+      # Prepare environment and build the Cordova app
+      - name: Prepare environment and build
+        run: |
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image sh -c "
+            rm -rf .github &&
+            cd src &&
+            cordova platform add android &&
+            cordova plugin add cordova-plugin-screen-pinning &&
+            cordova build"
+
+      # Find and move the built APK file to the workspace
+      - name: Move APK file
+        run: |
+          APK_PATH=$(find src -name '*.apk')
+          if [ -z "$APK_PATH" ]; then
+            echo "No APK file found!"
+            exit 1
+          fi
+          sudo mkdir -p /workspace/apk
+          sudo mv "$APK_PATH" /workspace/apk/
+
+      # Upload the built APK file as an artifact
       - uses: actions/upload-artifact@v4
         with:
-         name: babby-paint-apk-file
-         path: ~/*.apk
+          name: babby-paint-apk-file
+          path: /workspace/apk/*.apk
