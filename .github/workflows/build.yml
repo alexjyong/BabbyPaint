@@ -26,7 +26,7 @@ jobs:
             cordova plugin add cordova-plugin-screen-pinning &&
             cordova build"
 
-      # Find and move the built APK file to the workspace
+      # Move the built APK file to a known location
       - name: Move APK file
         run: |
           APK_PATH=$(find src -name '*.apk')
@@ -34,11 +34,10 @@ jobs:
             echo "No APK file found!"
             exit 1
           fi
-          mkdir -p /workspace/apk
-          mv "$APK_PATH" /workspace/apk/
+          sudo mv "$APK_PATH" ~/
 
       # Upload the built APK file as an artifact
       - uses: actions/upload-artifact@v4
         with:
           name: babby-paint-apk-file
-          path: /workspace/apk/*.apk
+          path: ~/$(basename $APK_PATH)
