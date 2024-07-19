@@ -12,56 +12,35 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
 </head>
 <body>
-<canvas	width="1000" height="350" id="mainCanvas"></canvas>
-<div class="controls">
-	<ul>
-	<li class="red selected"></li>
-        <li class="pink"></li>
-        <li class="orange"></li>
-        <li class="yellow"></li>
-        <li class="lime"></li>
-        <li class="green"></li>
-        <li class="mint"></li>
-        <li class="teal"></li>
-        <li class="cyan"></li>
-        <li class="blue"></li>
-        <li class="indigo"></li>
-        <li class="purple"></li>
-        <li class="violet"></li>
-        <li class="magenta"></li>
-        <li class="brown"></li>
-        <li class="grey"></li>
-        <li class="black"></li>
-        <li class="white"></li>
-	</ul>
-	<button class="utility" id="clear" onclick='clear_canvas_width ()'>Clear Canvas</button>
-	<button class="utility" id="lockButton">Lock</button>
-	<!-- <button id="revealColorSelect">New Color</button>
-	<div id="colorSelect">
-		<span id="newColor"></span>
-		<div class="sliders">
-			<p>
-				<label for="red">Red</label>
-				<input id="red" name="red" type="range" min=0 max=255 value=0>
-			</p>
-			<p>
-				<label for="green">Green</label>
-				<input id="green" name="green" type="range" min=0 max=255 value=0>
-			</p>
-			<p>
-				<label for="blue">Blue</label>
-				<input id="blue" name="blue" type="range" min=0 max=255 value=0>
-			</p>
-		</div>
-        
-		<div>
-			<button id="addNewColor">Add Color</button>
-		</div>
-         
-	</div> --> 
-</div>
-<script src="cordova.js"></script>
-<script src="js/jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/index.js" type="text/javascript" charset="utf-8"></script>
-</body>
+	<div class="container">
+	  <div class="controls">
+		<ul>
+		  <li class="red selected"></li>
+		  <li class="pink"></li>
+		  <li class="orange"></li>
+		  <li class="yellow"></li>
+		  <li class="lime"></li>
+		  <li class="green"></li>
+		  <li class="mint"></li>
+		  <li class="teal"></li>
+		  <li class="cyan"></li>
+		  <li class="blue"></li>
+		  <li class="indigo"></li>
+		  <li class="purple"></li>
+		  <li class="violet"></li>
+		  <li class="magenta"></li>
+		  <li class="brown"></li>
+		  <li class="grey"></li>
+		  <li class="black"></li>
+		  <li class="white"></li>
+		</ul>
+		<button class="utility" id="clear" onclick='clear_canvas_width()'>Clear Canvas</button>
+		<button class="utility" id="lockButton">Lock</button>
+	  </div>
+	  <canvas width="1000" height="350" id="mainCanvas"></canvas>
+	</div>
+	<script src="cordova.js"></script>
+	<script src="js/jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/index.js" type="text/javascript" charset="utf-8"></script>
+  </body>
 </html>
