@@ -10,6 +10,7 @@ var lastEvent;
 var mouseDown = false;
 
 var lockButton = $('#lockButton');
+var clearButton = $('#clearButton');
 var isLocked = false;
 var tapCount = 0;
 var lastTap = 0;
@@ -49,6 +50,11 @@ lockButton.on('click', function() {
         lastTap = currentTime;
     }
 });
+clearButton.on('click',function(){
+    var canvas = document.getElementById("mainCanvas");
+    var context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+})
 
 // When clicking on colors items
 $(".controls").on("click", "li", function () {
@@ -120,11 +126,3 @@ $canvas.mousedown(function (e) {
 }).mouseleave(function () {
     $canvas.mouseup();
 });
-
-// Clear the canvas when button is clicked
-function clear_canvas_width() {
-    var s = document.getElementById("mainCanvas");
-    var w = s.width;
-    s.width = 10;
-    s.width = w;
-}
