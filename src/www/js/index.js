@@ -3,7 +3,7 @@
 //document.addEventListener('deviceready', onDeviceReady, false);
 
 var color = $(".selected").css("background-color");
-var $canvas = $("canvas");
+var $canvas = $("#mainCanvas");
 var context = $canvas[0].getContext("2d");
 var lastEvent;
 var mouseDown = false;
