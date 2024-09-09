@@ -156,15 +156,6 @@ button {
 
 /* Responsive adjustments */
 
-
-@media only screen and (max-width: 768px) {
-    canvas {
-
-        max-width: 100%;
-        height: 50%;
-    }
-}
-
 /* @media only screen and (max-width: 768px) {
     body {
         font-size: 14px;
