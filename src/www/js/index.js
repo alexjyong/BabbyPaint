@@ -16,6 +16,7 @@ var lastTap = 0;
 
 // Function to resize the canvas
 function resizeCanvas() {
+    alert("hi mom")
     var canvas = $canvas[0];
     // Get the device pixel ratio (for high-DPI screens)
     var dpr = window.devicePixelRatio || 1;
@@ -34,11 +35,16 @@ function resizeCanvas() {
 
     // Scale the context to match the device pixel ratio.
     context.scale(dpr, dpr);
+    alert('Device Pixel Ratio:', window.devicePixelRatio);
 }
 
-// Call resizeCanvas on load and on window resize
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+document.addEventListener('deviceready', onDeviceReady, false);
+
+function onDeviceReady() {
+    console.log('Cordova is ready');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+}
 
 lockButton.on('click', function() {
     if (!isLocked) {
