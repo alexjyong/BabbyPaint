@@ -2,6 +2,9 @@
 // See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
 //document.addEventListener('deviceready', onDeviceReady, false);
 
+// Wait for the deviceready event before using any of Cordova's device APIs.
+document.addEventListener('deviceready', onDeviceReady, false);
+
 var color = $(".selected").css("background-color");
 var $canvas = $("#mainCanvas");
 var context = $canvas[0].getContext("2d");
@@ -16,35 +19,100 @@ var lastTap = 0;
 
 // Function to resize the canvas
 function resizeCanvas() {
-    alert("hi mom")
     var canvas = $canvas[0];
-    // Get the device pixel ratio (for high-DPI screens)
     var dpr = window.devicePixelRatio || 1;
 
-    // Get the size of the canvas in CSS pixels.
-    var width = window.innerWidth * 0.9; // 90% of window width
-    var height = window.innerHeight * 0.5; // 50% of window height
+    // Resize canvas to fit 90% of the window width and 50% of height
+    var width = window.innerWidth * 0.9;
+    var height = window.innerHeight * 0.5;
 
-    // Set the canvas display size (CSS pixels).
+    // Set CSS size
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
 
-    // Set the actual size of the canvas in device pixels.
+    // Set the actual size in device pixels
     canvas.width = width * dpr;
     canvas.height = height * dpr;
 
-    // Scale the context to match the device pixel ratio.
+    // Scale the context to match the device pixel ratio
     context.scale(dpr, dpr);
-    alert('Device Pixel Ratio:', window.devicePixelRatio);
 }
 
-document.addEventListener('deviceready', onDeviceReady, false);
-
+// Call resizeCanvas on load and window resize
 function onDeviceReady() {
     console.log('Cordova is ready');
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 }
+
+// Clear button event
+clearButton.on('click', function() {
+    context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);
+});
+
+// Color selection
+$(".controls").on("click", "li", function () {
+    $(this).siblings().removeClass("selected");
+    $(this).addClass("selected");
+    color = $(this).css("background-color");
+});
+
+// Function to get touch position, accounting for canvas size and scaling
+function getTouchPos(touchEvent) {
+    var rect = $canvas[0].getBoundingClientRect();
+    return {
+        offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width),
+        offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height)
+    };
+}
+
+// On touch events
+$canvas.on('touchstart', function (e) {
+    e.preventDefault();
+    var touchPos = getTouchPos(e.originalEvent);
+    lastEvent = touchPos;
+    mouseDown = true;
+}).on('touchmove', function (e) {
+    e.preventDefault();
+    if (mouseDown) {
+        var touchPos = getTouchPos(e.originalEvent);
+        context.beginPath();
+        context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
+        context.lineTo(touchPos.offsetX, touchPos.offsetY);
+        context.strokeStyle = color;
+        context.lineWidth = 5;
+        context.lineCap = 'round';
+        context.stroke();
+        lastEvent = touchPos;
+    }
+}).on('touchend', function () {
+    mouseDown = false;
+});
+
+$canvas.on('touchcancel', function () {
+    mouseDown = false;
+});
+
+// On mouse events
+$canvas.mousedown(function (e) {
+    lastEvent = e;
+    mouseDown = true;
+}).mousemove(function (e) {
+    if (mouseDown) {
+        context.beginPath();
+        context.moveTo(lastEvent.offsetX * ($canvas[0].width / $canvas.width()), lastEvent.offsetY * ($canvas[0].height / $canvas.height()));
+        context.lineTo(e.offsetX * ($canvas[0].width / $canvas.width()), e.offsetY * ($canvas[0].height / $canvas.height()));
+        context.strokeStyle = color;
+        context.lineWidth = 5;
+        context.lineCap = 'round';
+        context.stroke();
+        lastEvent = e;
+    }
+}).mouseup(function () {
+    mouseDown = false;
+}).mouseleave(function () {
+    $canvas.mouseup();
+});
 
 lockButton.on('click', function() {
     if (!isLocked) {
@@ -86,74 +154,3 @@ clearButton.on('click',function(){
     var context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
 })
-
-// When clicking on colors items
-$(".controls").on("click", "li", function () {
-    //  Deselect sibling elements
-    $(this).siblings().removeClass("selected");
-    //  Select clicked element
-    $(this).addClass("selected");
-
-    // Cache current color
-    color = $(this).css("background-color");
-
-});
-
-// Function to get the touch position, adjusting for canvas scaling
-function getTouchPos(touchEvent) {
-    var rect = $canvas[0].getBoundingClientRect();
-    return {
-        offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width),
-        offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height)
-    };
-}
-
-// On touch events on the canvas
-$canvas.on('touchstart', function (e) {
-    e.preventDefault(); // Prevent scrolling when touching the canvas
-    var touchPos = getTouchPos(e.originalEvent);
-    lastEvent = touchPos;
-    mouseDown = true;
-}).on('touchmove', function (e) {
-    e.preventDefault(); // Prevent scrolling when touching the canvas
-    if (mouseDown) {
-        var touchPos = getTouchPos(e.originalEvent);
-        context.beginPath();
-        context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
-        context.lineTo(touchPos.offsetX, touchPos.offsetY);
-        context.strokeStyle = color;
-        context.lineWidth = 5;
-        context.lineCap = 'round';
-        context.stroke();
-        lastEvent = touchPos;
-    }
-}).on('touchend', function (e) {
-    mouseDown = false;
-});
-
-$canvas.on('touchcancel', function () {
-    mouseDown = false;
-});
-  
-
-// On mouse events on the canvas
-$canvas.mousedown(function (e) {
-    lastEvent = e;
-    mouseDown = true;
-}).mousemove(function (e) {
-    // Draw lines
-    if (mouseDown) {
-        context.beginPath();
-        context.moveTo(lastEvent.offsetX * ($canvas[0].width / $canvas.width()), lastEvent.offsetY * ($canvas[0].height / $canvas.height()));
-        context.lineTo(e.offsetX * ($canvas[0].width / $canvas.width()), e.offsetY * ($canvas[0].height / $canvas.height()));
-        context.strokeStyle = color;
-        context.lineWidth = 5;
-        context.lineCap = 'round';
-        context.stroke();
-        lastEvent = e;
-    }
-}).mouseup(function () {
-    mouseDown = false;
-}).mouseleave(function () {
-    $canvas.mouseup();
-});
