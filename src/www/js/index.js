@@ -14,8 +14,11 @@ var lastTap = 0;
 
 // Function to resize the canvas
 function resizeCanvas() {
-    var canvas = $canvas[0];
+    var canvas = $canvas[0];  // Access the native DOM element of the canvas
     var dpr = window.devicePixelRatio || 1;
+
+    // Clear the canvas before resizing to avoid stretched content
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
     // Resize canvas to fit 90% of the window width and 80% of the height
     var width = window.innerWidth * 0.9;
@@ -29,7 +32,10 @@ function resizeCanvas() {
     canvas.width = width * dpr;
     canvas.height = height * dpr;
 
-    // Reset the scaling of the drawing context to match the DPR
+    // Reset the scaling transformation (clear any previous scale)
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    
+    // Apply scaling to match the device pixel ratio (DPR)
     context.scale(dpr, dpr);
 }
 
@@ -57,10 +63,10 @@ function getTouchPos(touchEvent) {
     var rect = $canvas[0].getBoundingClientRect();
     var dpr = window.devicePixelRatio || 1;
 
+    // Adjust touch coordinates for canvas size and scaling
     return {
-        // Adjust touch coordinates for canvas size and scaling
-        offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width),
-        offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height)
+        offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width) / dpr,
+        offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height) / dpr
     };
 }
 
