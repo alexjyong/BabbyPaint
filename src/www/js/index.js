@@ -1,7 +1,7 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
 var color = $(".selected").css("background-color");
-var $canvas = $("canvas");
+var $canvas = $("#mainCanvas");
 var context = $canvas[0].getContext("2d");
 var lastEvent;
 var mouseDown = false;
@@ -29,8 +29,7 @@ function resizeCanvas() {
     canvas.width = width * dpr;
     canvas.height = height * dpr;
 
-    // Scale the context to match the device pixel ratio
-    context.scale(dpr, dpr);
+    // No need to scale the context; high-DPI resolution is handled by canvas dimensions
 }
 
 // Call resizeCanvas on load and window resize
@@ -55,9 +54,11 @@ $(".controls").on("click", "li", function () {
 // Function to get touch position, accounting for canvas size and scaling
 function getTouchPos(touchEvent) {
     var rect = $canvas[0].getBoundingClientRect();
+    var dpr = window.devicePixelRatio || 1; // Ensure you account for pixel ratio
+
     return {
-        offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width),
-        offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height)
+        offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width) / dpr,
+        offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height) / dpr
     };
 }
 
@@ -95,8 +96,8 @@ $canvas.mousedown(function (e) {
 }).mousemove(function (e) {
     if (mouseDown) {
         context.beginPath();
-        context.moveTo(lastEvent.offsetX * ($canvas[0].width / $canvas.width()), lastEvent.offsetY * ($canvas[0].height / $canvas.height()));
-        context.lineTo(e.offsetX * ($canvas[0].width / $canvas.width()), e.offsetY * ($canvas[0].height / $canvas.height()));
+        context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
+        context.lineTo(e.offsetX, e.offsetY);
         context.strokeStyle = color;
         context.lineWidth = 5;
         context.lineCap = 'round';
@@ -115,7 +116,7 @@ lockButton.on('click', function() {
             function () {
                 console.log("Pinned mode activated!");
                 isLocked = true;
-                lockButton.text('Tap 4 times quickly to unlock'); // Update button text
+                lockButton.text('Tap 4 times quickly to unlock');
             },
             function (errorMessage) {
                 console.log("Error activating pinned mode:", errorMessage);
@@ -123,7 +124,7 @@ lockButton.on('click', function() {
         );
     } else {
         var currentTime = Date.now();
-        if (currentTime - lastTap < 500) { // Check for quick succession
+        if (currentTime - lastTap < 500) {
             tapCount++;
             if (tapCount >= 4) {
                 cordova.plugins.screenPinning.exitPinnedMode(
@@ -131,7 +132,7 @@ lockButton.on('click', function() {
                         console.log("Pinned mode deactivated!");
                         isLocked = false;
                         tapCount = 0;
-                        lockButton.text('Lock'); // Reset button text
+                        lockButton.text('Lock');
                     },
                     function (errorMessage) {
                         console.log("Error deactivating pinned mode:", errorMessage);
@@ -139,13 +140,14 @@ lockButton.on('click', function() {
                 );
             }
         } else {
-            tapCount = 1; // Too slow, start over
+            tapCount = 1;
         }
         lastTap = currentTime;
     }
 });
-clearButton.on('click',function(){
+
+clearButton.on('click', function() {
     var canvas = document.getElementById("mainCanvas");
     var context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
-})
+});
