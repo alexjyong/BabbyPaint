@@ -17,9 +17,9 @@ function resizeCanvas() {
     var canvas = $canvas[0];
     var dpr = window.devicePixelRatio || 1;
 
-    // Resize canvas to fit 90% of the window width and 50% of height
+    // Resize canvas to fit 90% of the window width and 80% of the height
     var width = window.innerWidth * 0.9;
-    var height = window.innerHeight * 0.5;
+    var height = window.innerHeight * 0.8;
 
     // Set CSS size
     canvas.style.width = width + "px";
@@ -29,7 +29,8 @@ function resizeCanvas() {
     canvas.width = width * dpr;
     canvas.height = height * dpr;
 
-    // No need to scale the context; high-DPI resolution is handled by canvas dimensions
+    // Reset the scaling of the drawing context to match the DPR
+    context.scale(dpr, dpr);
 }
 
 // Call resizeCanvas on load and window resize
@@ -54,11 +55,12 @@ $(".controls").on("click", "li", function () {
 // Function to get touch position, accounting for canvas size and scaling
 function getTouchPos(touchEvent) {
     var rect = $canvas[0].getBoundingClientRect();
-    var dpr = window.devicePixelRatio || 1; // Ensure you account for pixel ratio
+    var dpr = window.devicePixelRatio || 1;
 
     return {
-        offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width) / dpr,
-        offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height) / dpr
+        // Adjust touch coordinates for canvas size and scaling
+        offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width),
+        offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height)
     };
 }
 
@@ -110,6 +112,7 @@ $canvas.mousedown(function (e) {
     $canvas.mouseup();
 });
 
+// Lock button event
 lockButton.on('click', function() {
     if (!isLocked) {
         cordova.plugins.screenPinning.enterPinnedMode(
@@ -146,8 +149,7 @@ lockButton.on('click', function() {
     }
 });
 
+// Clear canvas on button click
 clearButton.on('click', function() {
-    var canvas = document.getElementById("mainCanvas");
-    var context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);
 });
