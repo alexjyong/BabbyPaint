@@ -60,10 +60,6 @@ $(".controls").on("click", "li", function () {
 // Function to get touch position, accounting for canvas size and scaling
 function getTouchPos(touchEvent) {
     var rect = $canvas[0].getBoundingClientRect();
-    console.log(touchEvent)
-    console.log(rect)
-    console.log($canvas[0].width)
-    console.log($canvas[0].height)
     return {
         offsetX: (touchEvent.touches[0].clientX - rect.left) * ($canvas[0].width / rect.width),
         offsetY: (touchEvent.touches[0].clientY - rect.top) * ($canvas[0].height / rect.height)
