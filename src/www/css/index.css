@@ -1,80 +1,5 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: #F5F5F5;
-    font-family: sans-serif;
-    color: black;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-.app-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-}
-
-canvas {
-    background: #FFF;
-    border-radius: 5px;
-    box-shadow: 0 4px 0 0 #E0E0E0;
-    cursor: url(../img/cursor.png), crosshair;
-    max-width: 90%;
-    max-height: 60%;
-    display: block;
-    margin: 0 auto;
-}
-
-.controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    margin-top: 10px;
-}
-
-ul {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    padding: 10px 0;
-    list-style-type: none;
-}
-
-ul li {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    box-shadow: 0 3px 0 0 #E0E0E0;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-ul li:hover {
-    transform: scale(1.1);
-}
-
-/* Colors */
-.red { background: #E74C3C; }
-.blue { background: #3498DB; }
-.yellow { background: #F1C40F; }
-.green { background: #68B25B; }
-.orange { background: #F39C12; }
-.purple { background: #8801e2; }
-.black { background: #34495E; }
-.white { background: #FFFFFF; }
-.grey { background: #95A5A6; }
+/* BUTTON STYLES
+==============*/
 
 button.utility {
     background: #68B25B;
@@ -89,6 +14,7 @@ button.utility {
     padding: 0 20px;
     width: 150px;
     text-align: center;
+    white-space: nowrap;
 }
 
 button.utility:hover {
@@ -124,6 +50,9 @@ button.utility:hover {
 
     button.utility {
         width: 100%;
+        /* Rotate the text inside the button for landscape mode */
+        transform: rotate(90deg);
+        transform-origin: center;
     }
 }
 
@@ -151,5 +80,6 @@ button.utility:hover {
 
     button.utility {
         width: 150px;
+        transform: rotate(0deg);  /* No rotation in portrait mode */
     }
 }
