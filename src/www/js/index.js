@@ -1,8 +1,3 @@
-// Wait for the deviceready event before using any of Cordova's device APIs.
-// See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
-//document.addEventListener('deviceready', onDeviceReady, false);
-
-// Wait for the deviceready event before using any of Cordova's device APIs.
 document.addEventListener('deviceready', onDeviceReady, false);
 
 var color = $(".selected").css("background-color");
@@ -68,7 +63,6 @@ function getTouchPos(touchEvent) {
 
 // On touch events
 $canvas.on('touchstart', function (e) {
-    console.log("hey that tickles");
     e.preventDefault();
     var touchPos = getTouchPos(e.originalEvent);
     lastEvent = touchPos;
