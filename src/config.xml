@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.example.babbypaint" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>BabbyPaint</name>
-    <description>Sample Apache Cordova App</description>
+    <description>Simple Paint app for kids</description>
     <author email="alexjyong@gmail.com" href="https://alexjyong.dev">
         Alex Yong
     </author>
@@ -9,10 +9,11 @@
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <platform name="android">
-    <icon src="icon/android/res/mipmap-mdpi/icon.png" density="mdpi"/>
-    <icon src="icon/android/res/mipmap-hdpi/icon.png" density="hdpi"/>
-    <icon src="icon/android/res/mipmap-xhdpi/icon.png" density="xhdpi"/>
-    <icon src="icon/android/res/mipmap-xxhdpi/icon.png" density="xxhdpi"/>
-    <icon src="icon/android/res/mipmap-xxxhdpi/icon.png" density="xxxhdpi"/>
-  </platform>
+      <preference name="Orientation" value="landscape" />
+      <icon src="icon/android/res/mipmap-mdpi/icon.png" density="mdpi"/>
+      <icon src="icon/android/res/mipmap-hdpi/icon.png" density="hdpi"/>
+      <icon src="icon/android/res/mipmap-xhdpi/icon.png" density="xhdpi"/>
+      <icon src="icon/android/res/mipmap-xxhdpi/icon.png" density="xxhdpi"/>
+      <icon src="icon/android/res/mipmap-xxxhdpi/icon.png" density="xxxhdpi"/>
+    </platform>
 </widget>
