@@ -72,6 +72,7 @@ function getTouchPos(touchEvent) {
 
 // On touch events
 $canvas.on('touchstart', function (e) {
+    console.log("hey that tickles");
     e.preventDefault();
     var touchPos = getTouchPos(e.originalEvent);
     lastEvent = touchPos;
