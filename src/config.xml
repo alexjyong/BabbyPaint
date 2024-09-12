@@ -9,6 +9,7 @@
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <platform name="android">
+      <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/screen/android/play_store_512.png" />
       <icon src="icon/android/res/mipmap-mdpi/icon.png" density="mdpi"/>
       <icon src="icon/android/res/mipmap-hdpi/icon.png" density="hdpi"/>
       <icon src="icon/android/res/mipmap-xhdpi/icon.png" density="xhdpi"/>
