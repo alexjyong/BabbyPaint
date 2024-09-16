@@ -147,6 +147,7 @@ lockButton.on('click', function() {
                         console.log("Error deactivating pinned mode:", errorMessage);
                     }
                 );
+                tapCount = 0;
             }
         } else {
             tapCount = 1;
@@ -158,13 +159,17 @@ lockButton.on('click', function() {
 // Clear canvas on 3 button click
 clearButton.on('click', function() {
     var currentTime = Date.now();
-    if (currentTime - lastTap < 500) {
-        tapCount++;
-        if (tapCount >= 3) {
-            context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);
+
+    if (currentTime - lastTap < 500) {  // Check for fast successive taps
+        tapCount++;  // Increment tap count
+        if (tapCount >= 3) {  // On the third tap
+            context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);  // Clear canvas
+            tapCount = 0;  // Reset the tap count
         }
     } else {
-        tapCount = 1;
+        tapCount = 1;  // Reset the tap count if taps are too slow
     }
-    lastTap = currentTime;
+
+    lastTap = currentTime;  // Update the last tap time
 });
+
