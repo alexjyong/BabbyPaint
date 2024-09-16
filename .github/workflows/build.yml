@@ -22,9 +22,10 @@ jobs:
           docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
-            cordova platform add android &&
-            cordova plugin add cordova-plugin-screen-pinning &&
-            cordova build"
+            cordova platform add android --verbose &&
+            cordova plugin add cordova-plugin-screen-pinning --verbose &&
+            cordova build --verbose"
+
 
       # Find and move the built APK file to the workspace
       - name: Move APK file
