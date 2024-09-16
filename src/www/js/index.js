@@ -9,7 +9,8 @@ var mouseDown = false;
 var lockButton = $('#lockButton');
 var clearButton = $('#clearButton');
 var isLocked = false;
-var tapCount = 0;
+var tapCountClear = 0;
+var tapCountLock = 0;
 var lastTap = 0;
 
 // Function to resize the canvas
@@ -132,25 +133,25 @@ lockButton.on('click', function() {
         clearTimeout(resetLockTextTimeout); 
         var currentTime = Date.now();
         if (currentTime - lastTap < 1000) {  
-            tapCount++;
-            if (tapCount >= 4) {
+            tapCountLock++;
+            if (tapCountLock >= 4) {
                 cordova.plugins.screenPinning.exitPinnedMode(
                     function () {
                         console.log("Pinned mode deactivated!");
                         isLocked = false;
-                        tapCount = 0;
+                        tapCountLock = 0;
                         lockButton.text('Lock'); 
                     },
                     function (errorMessage) {
                         console.log("Error deactivating pinned mode:", errorMessage);
                     }
                 );
-                tapCount = 0; 
+                tapCountLock = 0; 
             } else {
                 lockButton.text(`Tap ${4 - tapCount} more times quickly to unlock`);  
             }
         } else {
-            tapCount = 1; // Start fresh on a new tap sequence
+            tapCountLock = 0;
         }
         lastTap = currentTime;
         
@@ -169,17 +170,17 @@ clearButton.on('click', function() {
     var currentTime = Date.now();
 
     if (currentTime - lastTap < 1000) {  
-        tapCount++;
-        if (tapCount >= 3) {
+        tapCountClear++;
+        if (tapCountClear >= 3) {
             context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);  
-            tapCount = 0;  
+            tapCountClear = 0;  
             clearButton.text('Clear Canvas'); 
         } else {
-            clearButton.text(`Tap ${3 - tapCount} more times quickly to clear`);  
+            clearButton.text(`Tap ${3 - tapCountClear} more times quickly to clear`);  
         }
     } 
     else {
-        tapCount = 1;
+        tapCountClear = 0;
     }
 
     lastTap = currentTime;
