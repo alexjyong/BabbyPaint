@@ -142,13 +142,13 @@ lockButton.on('click', function() {
                         console.log("Error deactivating pinned mode:", errorMessage);
                     }
                 );
-                tapCount = 0; // Reset tap count after unlocking
+                tapCount = 0; 
             } else {
-                lockButton.text(`Tap ${4 - tapCount} more times to unlock`); // Update text dynamically
+                lockButton.text(`Tap ${4 - tapCount} more times to unlock`); 
             }
         } else {
             tapCount = 1;
-            lockButton.text('Tap 3 more times to unlock'); // Start fresh tap count
+            lockButton.text('Tap 3 more times to unlock'); 
         }
         lastTap = currentTime;
     }
@@ -158,19 +158,19 @@ lockButton.on('click', function() {
 clearButton.on('click', function() {
     var currentTime = Date.now();
 
-    if (currentTime - lastTap < 500) {  // Check for fast successive taps
-        tapCount++;  // Increment tap count
-        if (tapCount >= 3) {  // On the third tap
-            context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);  // Clear canvas
-            tapCount = 0;  // Reset the tap count
-            clearButton.text('Clear Canvas');  // Reset button text after clearing
+    if (currentTime - lastTap < 500) {  
+        tapCount++;  
+        if (tapCount >= 3) {  
+            context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);  
+            tapCount = 0;  
+            clearButton.text('Clear Canvas'); 
         } else {
-            clearButton.text(`Tap ${3 - tapCount} more times to clear`);  // Update text dynamically
+            clearButton.text(`Tap ${3 - tapCount} more times to clear`); 
         }
     } else {
-        tapCount = 1;  // Reset the tap count if taps are too slow
-        clearButton.text('Tap 2 more times to clear');  // Start fresh tap count
+        tapCount = 1;  
+        clearButton.text('Tap 2 more times to clear'); 
     }
 
-    lastTap = currentTime;  // Update the last tap time
+    lastTap = currentTime;  
 });
