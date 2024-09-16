@@ -46,11 +46,6 @@ function onDeviceReady() {
     window.addEventListener('resize', resizeCanvas);
 }
 
-// Clear button event
-clearButton.on('click', function() {
-    context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);
-});
-
 // Color selection
 $(".controls").on("click", "li", function () {
     $(this).siblings().removeClass("selected");
@@ -172,4 +167,3 @@ clearButton.on('click', function() {
 
     lastTap = currentTime;  // Update the last tap time
 });
-
