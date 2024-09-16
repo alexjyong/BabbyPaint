@@ -112,57 +112,45 @@ $canvas.mousedown(function (e) {
 });
 
 var resetLockTextTimeout; 
-var lastTapLock = 0;
+var lastTapLock = 0; 
 var tapCountLock = 0;
 
 // Lock button event
 lockButton.on('click', function() {
-    if (!isLocked) {
-        cordova.plugins.screenPinning.enterPinnedMode(
-            function () {
-                console.log("Pinned mode activated!");
-                isLocked = true;
-                lockButton.text('Tap 4 times quickly to unlock');
-            },
-            function (errorMessage) {
-                console.log("Error activating pinned mode:", errorMessage);
-            }
-        );
-    } else {
-        clearTimeout(resetLockTextTimeout); 
-        var currentTime = Date.now();
+    clearTimeout(resetLockTextTimeout); 
+    var currentTime = Date.now();
 
-        // Skip comparison logic on the first tap when lastTapLock is 0
-        if (lastTapLock !== 0 && currentTime - lastTapLock < 1000) {  
-            tapCountLock++;
-            if (tapCountLock >= 4) {
-                cordova.plugins.screenPinning.exitPinnedMode(
-                    function () {
-                        console.log("Pinned mode deactivated!");
-                        isLocked = false;
-                        tapCountLock = 0;
-                        lockButton.text('Lock'); 
-                    },
-                    function (errorMessage) {
-                        console.log("Error deactivating pinned mode:", errorMessage);
-                    }
-                );
-                lastTapLock = 0; 
-                tapCountLock = 0; 
-            } else {
-                lockButton.text(`Tap ${4 - tapCountLock} more times quickly to unlock`);  
-            }
+    // On the first tap, skip comparison logic but update the button text immediately
+    if (lastTapLock === 0 || currentTime - lastTapLock >= 1000) {  
+        tapCountLock = 1; // First tap starts the counting at 1
+        lockButton.text('Tap 3 more times quickly to unlock');  // Immediate feedback on first tap
+    } else { 
+        tapCountLock++;
+        if (tapCountLock >= 4) {
+            cordova.plugins.screenPinning.exitPinnedMode(
+                function () {
+                    console.log("Pinned mode deactivated!");
+                    isLocked = false;
+                    tapCountLock = 0;
+                    lockButton.text('Lock'); 
+                },
+                function (errorMessage) {
+                    console.log("Error deactivating pinned mode:", errorMessage);
+                }
+            );
+            lastTapLock = 0; 
+            tapCountLock = 0; 
         } else {
-            tapCountLock = 1; // Start tap counting at 1 on first tap
+            lockButton.text(`Tap ${4 - tapCountLock} more times quickly to unlock`);  
         }
-        
-        lastTapLock = currentTime;
-
-        // Set a timeout to reset the button text after 1000 ms (1 second) of inactivity
-        resetLockTextTimeout = setTimeout(function() {
-            lockButton.text('Lock');
-        }, 1000);
     }
+    
+    lastTapLock = currentTime;
+
+    // Set a timeout to reset the button text after 1000 ms (1 second) of inactivity
+    resetLockTextTimeout = setTimeout(function() {
+        lockButton.text('Lock');
+    }, 1000);
 });
 
 var resetClearTextTimeout; 
@@ -174,19 +162,19 @@ clearButton.on('click', function() {
     clearTimeout(resetClearTextTimeout); // Clear any existing timeout
     var currentTime = Date.now();
 
-    // Skip comparison logic on the first tap when lastTapClear is 0
-    if (lastTapClear !== 0 && currentTime - lastTapClear < 1000) {  
+    // On the first tap, skip comparison logic but update the button text immediately
+    if (lastTapClear === 0 || currentTime - lastTapClear >= 1000) {  
+        tapCountClear = 1; // First tap starts the counting at 1
+        clearButton.text('Tap 2 more times quickly to clear');  // Immediate feedback on first tap
+    } else { 
         tapCountClear++;
         if (tapCountClear >= 3) {
             context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);  
             tapCountClear = 0;
-            lastTapClear = 0;  
             clearButton.text('Clear Canvas'); 
         } else {
             clearButton.text(`Tap ${3 - tapCountClear} more times quickly to clear`);  
         }
-    } else {
-        tapCountClear = 1; // Start tap counting at 1 on first tap
     }
 
     lastTapClear = currentTime;
@@ -196,3 +184,4 @@ clearButton.on('click', function() {
         clearButton.text('Clear Canvas');
     }, 1000);
 });
+
