@@ -112,7 +112,7 @@ $canvas.mousedown(function (e) {
 });
 
 var resetLockTextTimeout; 
-var lastTapLock = 0; // Initialized to 0
+var lastTapLock = 0;
 var tapCountLock = 0;
 
 // Lock button event
@@ -166,7 +166,7 @@ lockButton.on('click', function() {
 });
 
 var resetClearTextTimeout; 
-var lastTapClear = 0; // Initialized to 0
+var lastTapClear = 0; 
 var tapCountClear = 0;
 
 // Clear canvas on 3 button click
