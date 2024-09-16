@@ -167,5 +167,4 @@ clearButton.on('click', function() {
             tapCount = 1;
         }
         lastTap = currentTime;
-    context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);
 });
