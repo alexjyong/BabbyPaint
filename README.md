@@ -9,4 +9,4 @@ First things first, credit to [Lachlan Dawson](https://codepen.io/Lachlandawson)
 
 I got the idea to do this when I was trying to find a simple paint applcation for my young daughter's tablet and couldn't find an app that did exactly what I wanted. So I figured I could make my own!
 
-Lock button feature inspiried by [immersivelock.](https://github.com/babydots/immersivelock) by the [Peter Serwylo](https://github.com/pserwylo).
+Lock button feature inspiried by [immersivelock.](https://github.com/babydots/immersivelock) by [Peter Serwylo](https://github.com/pserwylo).
