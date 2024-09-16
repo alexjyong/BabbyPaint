@@ -11,8 +11,8 @@ jobs:
       # Check out the code
       - uses: actions/checkout@v4
 
-      # Build the custom Docker image
-      - name: Build custom Docker image
+      # Pull the custom Docker image
+      - name: Pull custom Docker image
         run: |
           docker pull ghcr.io/alexjyong/babbypaint:main
 
