@@ -19,7 +19,7 @@ jobs:
       # Prepare environment and build the Cordova app
       - name: Prepare environment and build
         run: |
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged babbypaint sh -c "
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
             cordova platform add android &&
