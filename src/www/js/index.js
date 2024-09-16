@@ -158,13 +158,13 @@ lockButton.on('click', function() {
 // Clear canvas on 3 button click
 clearButton.on('click', function() {
     var currentTime = Date.now();
-        if (currentTime - lastTap < 500) {
-            tapCount++;
-            if (tapCount >= 3) {
-                context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);
-            }
-        } else {
-            tapCount = 1;
+    if (currentTime - lastTap < 500) {
+        tapCount++;
+        if (tapCount >= 3) {
+            context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);
         }
-        lastTap = currentTime;
+    } else {
+        tapCount = 1;
+    }
+    lastTap = currentTime;
 });
