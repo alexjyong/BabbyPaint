@@ -136,16 +136,19 @@ lockButton.on('click', function() {
                         console.log("Pinned mode deactivated!");
                         isLocked = false;
                         tapCount = 0;
-                        lockButton.text('Lock');
+                        lockButton.text('Lock'); // Reset to default
                     },
                     function (errorMessage) {
                         console.log("Error deactivating pinned mode:", errorMessage);
                     }
                 );
-                tapCount = 0;
+                tapCount = 0; // Reset tap count after unlocking
+            } else {
+                lockButton.text(`Tap ${4 - tapCount} more times to unlock`); // Update text dynamically
             }
         } else {
             tapCount = 1;
+            lockButton.text('Tap 3 more times to unlock'); // Start fresh tap count
         }
         lastTap = currentTime;
     }
@@ -160,9 +163,13 @@ clearButton.on('click', function() {
         if (tapCount >= 3) {  // On the third tap
             context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);  // Clear canvas
             tapCount = 0;  // Reset the tap count
+            clearButton.text('Clear Canvas');  // Reset button text after clearing
+        } else {
+            clearButton.text(`Tap ${3 - tapCount} more times to clear`);  // Update text dynamically
         }
     } else {
         tapCount = 1;  // Reset the tap count if taps are too slow
+        clearButton.text('Tap 2 more times to clear');  // Start fresh tap count
     }
 
     lastTap = currentTime;  // Update the last tap time
