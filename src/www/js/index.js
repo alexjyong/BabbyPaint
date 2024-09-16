@@ -177,8 +177,10 @@ clearButton.on('click', function() {
         } else {
             clearButton.text(`Tap ${3 - tapCount} more times quickly to clear`);  
         }
-    } else {
+    } 
+    else {
         tapCount = 1;
+    }
 
     lastTap = currentTime;
 
