@@ -92,11 +92,11 @@ button.utility {
     box-shadow: 0 3px 0 0 #6A845F;
     color: #fff;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 40px;
     margin: 10px 0;
     padding: 0 20px;
-    width: 150px;
+    width: 160px;
     text-align: center;
     white-space: nowrap;
 }
