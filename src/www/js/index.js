@@ -113,6 +113,8 @@ $canvas.mousedown(function (e) {
     $canvas.mouseup();
 });
 
+var resetLockTextTimeout; 
+
 // Lock button event
 lockButton.on('click', function() {
     if (!isLocked) {
@@ -127,8 +129,9 @@ lockButton.on('click', function() {
             }
         );
     } else {
+        clearTimeout(resetLockTextTimeout); 
         var currentTime = Date.now();
-        if (currentTime - lastTap < 500) {
+        if (currentTime - lastTap < 1000) {  
             tapCount++;
             if (tapCount >= 4) {
                 cordova.plugins.screenPinning.exitPinnedMode(
@@ -136,7 +139,7 @@ lockButton.on('click', function() {
                         console.log("Pinned mode deactivated!");
                         isLocked = false;
                         tapCount = 0;
-                        lockButton.text('Lock'); // Reset to default
+                        lockButton.text('Lock'); 
                     },
                     function (errorMessage) {
                         console.log("Error deactivating pinned mode:", errorMessage);
@@ -144,33 +147,43 @@ lockButton.on('click', function() {
                 );
                 tapCount = 0; 
             } else {
-                lockButton.text(`Tap ${4 - tapCount} more times to unlock`); 
+                lockButton.text(`Tap ${4 - tapCount} more times quickly to unlock`);  
             }
         } else {
-            tapCount = 1;
-            lockButton.text('Tap 3 more times to unlock'); 
+            tapCount = 1; // Start fresh on a new tap sequence
         }
         lastTap = currentTime;
+        
+        // Set a timeout to reset the button text after 1000 ms (1 second) of inactivity
+        resetLockTextTimeout = setTimeout(function() {
+            lockButton.text('Lock');
+        }, 1000);
     }
 });
 
+var resetClearTextTimeout; 
+
 // Clear canvas on 3 button click
 clearButton.on('click', function() {
+    clearTimeout(resetClearTextTimeout); // Clear any existing timeout
     var currentTime = Date.now();
 
-    if (currentTime - lastTap < 500) {  
-        tapCount++;  
-        if (tapCount >= 3) {  
+    if (currentTime - lastTap < 1000) {  
+        tapCount++;
+        if (tapCount >= 3) {
             context.clearRect(0, 0, $canvas[0].width, $canvas[0].height);  
             tapCount = 0;  
             clearButton.text('Clear Canvas'); 
         } else {
-            clearButton.text(`Tap ${3 - tapCount} more times to clear`); 
+            clearButton.text(`Tap ${3 - tapCount} more times quickly to clear`);  
         }
     } else {
-        tapCount = 1;  
-        clearButton.text('Tap 2 more times to clear'); 
-    }
+        tapCount = 1;
 
-    lastTap = currentTime;  
+    lastTap = currentTime;
+
+    // Set a timeout to reset the button text after 1000 ms (1 second) of inactivity
+    resetClearTextTimeout = setTimeout(function() {
+        clearButton.text('Clear Canvas');
+    }, 1000);
 });
