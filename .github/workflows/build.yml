@@ -14,7 +14,7 @@ jobs:
       # Build the custom Docker image
       - name: Build custom Docker image
         run: |
-          docker build --cache-from cordova-image:latest -t cordova-image .
+          docker pull ghcr.io/alexjyong/babbypaint:main
 
       # Prepare environment and build the Cordova app
       - name: Prepare environment and build
