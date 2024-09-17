@@ -117,40 +117,57 @@ var tapCountLock = 0;
 
 // Lock button event
 lockButton.on('click', function() {
-    clearTimeout(resetLockTextTimeout); 
-    var currentTime = Date.now();
 
-    // On the first tap, skip comparison logic but update the button text immediately
-    if (lastTapLock === 0 || currentTime - lastTapLock >= 1000) {  
-        tapCountLock = 1; // First tap starts the counting at 1
-        lockButton.text('Tap 3 more times quickly to unlock');  // Immediate feedback on first tap
-    } else { 
-        tapCountLock++;
-        if (tapCountLock >= 4) {
-            cordova.plugins.screenPinning.exitPinnedMode(
-                function () {
-                    console.log("Pinned mode deactivated!");
-                    isLocked = false;
-                    tapCountLock = 0;
-                    lockButton.text('Lock'); 
-                },
-                function (errorMessage) {
-                    console.log("Error deactivating pinned mode:", errorMessage);
-                }
-            );
-            lastTapLock = 0; 
-            tapCountLock = 0; 
-        } else {
-            lockButton.text(`Tap ${4 - tapCountLock} more times quickly to unlock`);  
+    if (!isLocked){
+        cordova.plugins.screenPinning.enterPinnedMode(
+            function () {
+                console.log("Pinned mode activated!");
+                isLocked = true;
+                lockButton.text('Tap 4 times quickly to unlock');
+            },
+            function (errorMessage) {
+                console.log("Error activating pinned mode:", errorMessage);
+            }
+        );
+    }
+    else {
+        clearTimeout(resetLockTextTimeout); 
+        var currentTime = Date.now();
+
+        // On the first tap, skip comparison logic but update the button text immediately
+        if (lastTapLock === 0 || currentTime - lastTapLock >= 1000) {  
+            tapCountLock = 1; // First tap starts the counting at 1
+            lockButton.text('Tap 3 more times quickly to unlock');  // Immediate feedback on first tap
+        } else { 
+            tapCountLock++;
+            if (tapCountLock >= 4) {
+                cordova.plugins.screenPinning.exitPinnedMode(
+                    function () {
+                        console.log("Pinned mode deactivated!");
+                        isLocked = false;
+                        tapCountLock = 0;
+                        lockButton.text('Lock'); 
+                    },
+                    function (errorMessage) {
+                        console.log("Error deactivating pinned mode:", errorMessage);
+                    }
+                );
+                lastTapLock = 0; 
+                tapCountLock = 0; 
+            } else {
+                lockButton.text(`Tap ${4 - tapCountLock} more times quickly to unlock`);  
+            }
         }
+        
+        lastTapLock = currentTime;
+
+        // Set a timeout to reset the button text after 1000 ms (1 second) of inactivity
+        resetLockTextTimeout = setTimeout(function() {
+            lockButton.text('Lock');
+        }, 1000);
+
     }
     
-    lastTapLock = currentTime;
-
-    // Set a timeout to reset the button text after 1000 ms (1 second) of inactivity
-    resetLockTextTimeout = setTimeout(function() {
-        lockButton.text('Lock');
-    }, 1000);
 });
 
 var resetClearTextTimeout; 
