@@ -92,13 +92,15 @@ button.utility {
     box-shadow: 0 3px 0 0 #6A845F;
     color: #fff;
     cursor: pointer;
-    font-size: 16px;
-    line-height: 40px;
+    font-size: 14px;
+    line-height: 1.2;  /* Adjust line height for better text alignment */
     margin: 10px 0;
-    padding: 0 20px;
-    width: 150px;
-    text-align: center;
-    white-space: nowrap;
+    padding: 10px 15px; /* Adjust padding */
+    width: auto;  /* Set width to auto so it adapts to the text content */
+    max-width: 90%;  /* Add a max-width to avoid text overflow */
+    text-align: center; /* Ensure text is centered */
+    white-space: normal;  /* Allow text to wrap if needed */
+    word-wrap: break-word; /* Break long words to avoid overflow */
 }
 
 button.utility:hover {
@@ -137,6 +139,7 @@ button.utility:hover {
         /* Rotate the text inside the button for landscape mode */
         transform: rotate(90deg);
         transform-origin: center;
+        line-height: 1.5;  /* Adjust line height for rotated text */
     }
 }
 
@@ -163,7 +166,7 @@ button.utility:hover {
     }
 
     button.utility {
-        width: 150px;
+        width: 150px;  /* Set button width in portrait mode */
         transform: rotate(0deg);  /* No rotation in portrait mode */
     }
 }
