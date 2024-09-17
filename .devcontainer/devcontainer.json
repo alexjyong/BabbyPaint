@@ -1,7 +1,6 @@
 {
     "image": "mcr.microsoft.com/devcontainers/universal:2",
     "features": {
-      "ghcr.io/akhildevelops/devcontainer-features/android-cli:0": {},
-      "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {"shallowClone": true}
+      "ghcr.io/devcontainers/features/docker-in-docker:2": {}
     }
   }

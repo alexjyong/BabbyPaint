@@ -11,20 +11,21 @@ jobs:
       # Check out the code
       - uses: actions/checkout@v4
 
-      # Build the custom Docker image
-      - name: Build custom Docker image
+      # Pull the custom Docker image
+      - name: Pull custom Docker image
         run: |
-          docker build --cache-from cordova-image:latest -t cordova-image .
+          docker pull ghcr.io/alexjyong/babbypaint:main
 
       # Prepare environment and build the Cordova app
       - name: Prepare environment and build
         run: |
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged cordova-image sh -c "
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
-            cordova platform add android &&
-            cordova plugin add cordova-plugin-screen-pinning &&
-            cordova build"
+            cordova platform add android --verbose &&
+            cordova plugin add cordova-plugin-screen-pinning --verbose &&
+            cordova build --verbose"
+
 
       # Find and move the built APK file to the workspace
       - name: Move APK file
