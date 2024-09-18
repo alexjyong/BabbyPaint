@@ -44,10 +44,10 @@ If you're curious or want to make your own custom tweaks, you can build BabbyPai
 
 4. Once the build process finishes, you’ll have your APK ready in the `/src/platforms/android/app/build/outputs/apk/` directory.
 
-Feel free to modify and play around with the source code to fit your needs! Whether you’re building this for your own kids or just curious about how it works, it’s easy to jump in and get started.
+Feel free to modify and play around with the source code to fit your needs! Whether you’re building this for your own kids or just curious about how it works, it’s easy to jump in and get started. 
 
 
-#Acknowledgements
+# Acknowledgements
 
 
 I got the idea to do this when I was trying to find a simple paint applcation for my young daughter's tablet and couldn't find an app that did exactly what I wanted. So I figured I could make my own!
