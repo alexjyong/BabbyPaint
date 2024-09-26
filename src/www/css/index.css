@@ -4,12 +4,19 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background: #F5F5F5;
     font-family: sans-serif;
     color: black;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,11 +30,13 @@ body {
     align-items: center;
     height: 100%;
     width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 /* Menu bar styling */
 .menu-bar {
-    background-color: #673AB7; /* Set your desired color */
+    background-color: #673AB7;
     width: 100%;
     height: 56px;
     display: flex;
@@ -66,8 +75,8 @@ body {
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: 40px; /* Below the menu bar */
-    right: 10px; /* Align with the icon button */
+    top: 56px; 
+    right: 10px; 
     background-color: #FFFFFF;
     border: 1px solid #E0E0E0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
