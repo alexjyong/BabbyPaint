@@ -8,9 +8,18 @@
     <title>Babby Paint! 🖌️</title>
     <link rel="stylesheet" href="css/index.css" type="text/css" media="screen" title="no title">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
-    </head>
-    <body>
+</head>
+<body>
     <div class="app-container">
+        <div class="menu-bar">
+            <div class="menu-title">Babby Paint!</div>
+            <div class="menu-icons">
+                <button class="icon-button" id="menuButton">⋮</button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <button class="utility" id="lockButton">Lock</button>
+                </div>
+            </div>
+        </div>
         <canvas id="mainCanvas"></canvas>
         <div class="controls">
             <ul>
@@ -25,11 +34,9 @@
                 <li class="grey"></li>
             </ul>
             <button class="utility" id="clearButton">Clear Canvas</button>
-            <button class="utility" id="lockButton">Lock</button>
         </div>
     </div>
     <script src="cordova.js"></script>
     <script src="js/jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/index.js" type="text/javascript" charset="utf-8"></script>
-    </body>
-    
+</body>

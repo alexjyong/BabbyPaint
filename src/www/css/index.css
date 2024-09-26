@@ -25,6 +25,73 @@ body {
     width: 100%;
 }
 
+/* Menu bar styling */
+.menu-bar {
+    background-color: #673AB7; /* Set your desired color */
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative; /* Needed for dropdown positioning */
+}
+
+.menu-title {
+    color: #FFFFFF;
+    font-size: 20px;
+}
+
+.menu-icons {
+    display: flex;
+    align-items: center;
+    position: relative; /* Needed for dropdown positioning */
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+}
+
+.icon-button:focus {
+    outline: none;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 40px; /* Below the menu bar */
+    right: 10px; /* Align with the icon button */
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 5px;
+    z-index: 1000; /* Above other elements */
+}
+
+.dropdown-menu button {
+    background-color: #68B25B;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+    background-color: #56A64C;
+}
+
+/* Canvas styling */
 canvas {
     background: #FFF;
     border-radius: 5px;

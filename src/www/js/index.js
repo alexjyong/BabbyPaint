@@ -10,6 +10,21 @@ var lockButton = $('#lockButton');
 var clearButton = $('#clearButton');
 var isLocked = false;
 
+var menuButton = $('#menuButton'); // Menu button
+var dropdownMenu = $('#dropdownMenu'); // Dropdown menu
+
+// Toggle the dropdown menu
+menuButton.on('click', function() {
+    dropdownMenu.toggle(); // Show/hide the dropdown menu
+});
+
+// Close the dropdown menu if clicking outside
+$(document).on('click', function(event) {
+    if (!$(event.target).closest('#menuButton').length && !$(event.target).closest('#dropdownMenu').length) {
+        dropdownMenu.hide(); // Hide the dropdown menu
+    }
+});
+
 // Function to resize the canvas
 function resizeCanvas() {
     var canvas = $canvas[0];  // Access the native DOM element of the canvas
