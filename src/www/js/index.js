@@ -8,6 +8,7 @@ var mouseDown = false;
 
 var lockButton = $('#lockButton');
 var clearButton = $('#clearButton');
+var fabButton = $('#fabButton'); // Main FAB button
 var isLocked = false;
 
 // Function to resize the canvas
@@ -117,7 +118,6 @@ var tapCountLock = 0;
 
 // Lock button event
 lockButton.on('click', function() {
-
     if (!isLocked){
         cordova.plugins.screenPinning.enterPinnedMode(
             function () {
@@ -165,16 +165,13 @@ lockButton.on('click', function() {
         resetLockTextTimeout = setTimeout(function() {
             lockButton.text('Lock');
         }, 1000);
-
     }
-    
 });
 
+// Clear canvas on 3 button click
 var resetClearTextTimeout; 
 var lastTapClear = 0; 
 var tapCountClear = 0;
-
-// Clear canvas on 3 button click
 clearButton.on('click', function() {
     clearTimeout(resetClearTextTimeout); // Clear any existing timeout
     var currentTime = Date.now();
@@ -202,3 +199,8 @@ clearButton.on('click', function() {
     }, 1000);
 });
 
+// Toggle FAB expansion to show or hide the lock button
+fabButton.on('click', function() {
+    $(this).toggleClass('expanded'); // Toggles the 'expanded' class on FAB
+    $('.sub-fab').toggleClass('expanded'); // Toggles the 'expanded' class on sub-FABs
+});
