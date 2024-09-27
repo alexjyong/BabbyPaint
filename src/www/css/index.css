@@ -118,38 +118,52 @@ button.utility:hover {
 }
 
 /* Main FAB button */
+/* General FAB styling */
 .fab {
-    background-color: #F44336;
-    border: none;
-    border-radius: 50%;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     width: 56px;
     height: 56px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    background-color: #F44336; /* Main FAB color */
     color: #FFFFFF;
-    font-size: 24px;
-    cursor: pointer;
     display: flex;
-    align-items: center;
     justify-content: center;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    outline: none;
+    align-items: center;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.3s;
 }
 
-/* Sub FAB button */
+/* Sub-FAB styling */
 .sub-fab {
-    background-color: #68B25B;
-    margin-top: 10px; /* Distance between FABs */
-    transform: scale(0);
-    opacity: 0;
-    pointer-events: none;
+    position: fixed;
+    bottom: 80px; /* Adjust this to control distance from the main FAB */
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #FF5722; /* Sub-FAB color */
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transform: scale(0); /* Initially hidden */
+    opacity: 0; /* Initially invisible */
+    pointer-events: none; /* Disable click events initially */
+    transition: transform 0.3s, opacity 0.3s;
 }
 
 /* FAB buttons when expanded */
-.fab.expanded .sub-fab {
+.fab.expanded + .sub-fab {
     transform: scale(1);
     opacity: 1;
-    pointer-events: all;
+    pointer-events: all; /* Enable click events */
 }
+
 /* Responsive adjustments */
 @media only screen and (orientation: landscape) {
     .app-container {

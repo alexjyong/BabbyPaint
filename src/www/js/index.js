@@ -201,6 +201,9 @@ clearButton.on('click', function() {
 
 // Toggle FAB expansion to show or hide the lock button
 fabButton.on('click', function() {
-    $(this).toggleClass('expanded'); // Toggles the 'expanded' class on FAB
-    $('.sub-fab').toggleClass('expanded'); // Toggles the 'expanded' class on sub-FABs
+    console.log('FAB clicked');
+    $(this).toggleClass('expanded');
+    $('.sub-fab').toggleClass('expanded');
+    console.log('FAB class:', $(this).attr('class'));
+    console.log('Sub-FAB class:', $('.sub-fab').attr('class'));
 });
