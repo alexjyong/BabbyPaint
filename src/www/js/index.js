@@ -171,10 +171,17 @@ lockButton.on('click', function() {
                 lastTapLock = 0; 
                 tapCountLock = 0; 
             } else {
+                var message = "";
+                if (3 - tapCountLock == 2) {
+                    message = `Tap 1 more time quickly to unlock.`; 
+                }
+                else {
+                    message = `Tap ${4 - tapCountLock} more times quickly to unlock.` 
+                }
                 window.plugins.toast.hide();
                 window.plugins.toast.showWithOptions(
                     {
-                      message: `Tap ${4 - tapCountLock} more times quickly to unlock`,
+                      message: message,
                       duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
                       position: "top"
                     }
@@ -206,7 +213,13 @@ clearButton.on('click', function() {
             tapCountClear = 0;
             clearButton.text('Clear Canvas'); 
         } else {
-            clearButton.text(`Tap ${3 - tapCountClear} more times quickly to clear`);  
+            if (3 - tapCountClear == 2) {
+                clearButton.text(`Tap 1 more time quickly to clear`); 
+            }
+            else {
+                clearButton.text(`Tap ${3 - tapCountClear} more times quickly to clear`); 
+            }
+             
         }
     }
 
