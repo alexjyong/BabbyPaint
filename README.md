@@ -35,11 +35,11 @@ If you're curious or want to make your own custom tweaks, you can build BabbyPai
 3. Now you're ready to prepare the environment and build the APK for Android:
     ```bash
     docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-      rm -rf .github &&
-      cd src &&
-      cordova platform add android --verbose &&
-      cordova plugin add cordova-plugin-screen-pinning --verbose &&
-      cordova build --verbose"
+            cd src &&
+            cordova platform add android --verbose &&
+            cordova plugin add cordova-plugin-x-toast &&
+            cordova plugin add cordova-plugin-screen-pinning --verbose &&
+            cordova build --verbose"
     ```
 
 4. Once the build process finishes, you’ll have your APK ready in the `/src/platforms/android/app/build/outputs/apk/` directory.

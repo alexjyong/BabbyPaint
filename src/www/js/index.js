@@ -123,7 +123,16 @@ lockButton.on('click', function() {
             function () {
                 console.log("Pinned mode activated!");
                 isLocked = true;
-                lockButton.text('Tap 4 times quickly to unlock');
+
+                window.plugins.toast.hide();
+                window.plugins.toast.showWithOptions(
+                    {
+                      message: "Tap 4 times quickly to unlock",
+                      duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+                      position: "top"
+                    }
+                  );
+                lockButton.text('Unlock app');
             },
             function (errorMessage) {
                 console.log("Error activating pinned mode:", errorMessage);
@@ -137,7 +146,14 @@ lockButton.on('click', function() {
         // On the first tap, skip comparison logic but update the button text immediately
         if (lastTapLock === 0 || currentTime - lastTapLock >= 1000) {  
             tapCountLock = 1; // First tap starts the counting at 1
-            lockButton.text('Tap 3 more times quickly to unlock');  // Immediate feedback on first tap
+            window.plugins.toast.hide();
+            window.plugins.toast.showWithOptions(
+                {
+                  message: "Tap 3 more times quickly to unlock",
+                  duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+                  position: "top"
+                }
+              );
         } else { 
             tapCountLock++;
             if (tapCountLock >= 4) {
@@ -146,7 +162,7 @@ lockButton.on('click', function() {
                         console.log("Pinned mode deactivated!");
                         isLocked = false;
                         tapCountLock = 0;
-                        lockButton.text('Lock'); 
+                        lockButton.text('Lock app');
                     },
                     function (errorMessage) {
                         console.log("Error deactivating pinned mode:", errorMessage);
@@ -155,16 +171,19 @@ lockButton.on('click', function() {
                 lastTapLock = 0; 
                 tapCountLock = 0; 
             } else {
-                lockButton.text(`Tap ${4 - tapCountLock} more times quickly to unlock`);  
+                window.plugins.toast.hide();
+                window.plugins.toast.showWithOptions(
+                    {
+                      message: `Tap ${4 - tapCountLock} more times quickly to unlock`,
+                      duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+                      position: "top"
+                    }
+                  ); 
             }
         }
         
         lastTapLock = currentTime;
 
-        // Set a timeout to reset the button text after 1000 ms (1 second) of inactivity
-        resetLockTextTimeout = setTimeout(function() {
-            lockButton.text('Lock');
-        }, 1000);
     }
 });
 
