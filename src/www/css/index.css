@@ -29,7 +29,6 @@ canvas {
     background: #FFF;
     border-radius: 5px;
     box-shadow: 0 4px 0 0 #E0E0E0;
-    cursor: url(../img/cursor.png), crosshair;
     max-width: 90%;
     max-height: 60%;
     display: block;
@@ -145,7 +144,7 @@ button.utility:hover {
     height: 48px;
     border-radius: 50%;
     background-color: #68B25B;
-    color: #fff
+    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
