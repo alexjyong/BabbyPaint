@@ -3,9 +3,7 @@
 <img width="242" alt="logo" src="https://github.com/user-attachments/assets/180a2ee3-9c03-4cf4-8b18-4b78cac6258d">
 
 <br>
-
-<img width="242" alt="screenshot_of_app" src="https://github.com/user-attachments/assets/0a08abee-d175-4f7a-8541-7f2f2753e67c">
-
+<img width="242" alt="screenshot_of_app" src="https://github.com/user-attachments/assets/df7dc7b5-bfa2-46c9-84a3-d519d4de7d77">
 
 Simple little paint application for kids.
 
