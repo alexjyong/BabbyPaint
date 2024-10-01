@@ -29,7 +29,6 @@ canvas {
     background: #FFF;
     border-radius: 5px;
     box-shadow: 0 4px 0 0 #E0E0E0;
-    cursor: url(../img/cursor.png), crosshair;
     max-width: 90%;
     max-height: 60%;
     display: block;
@@ -105,6 +104,63 @@ button.utility {
 
 button.utility:hover {
     background: #56A64C;
+}
+
+/* FAB container */
+.fab-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Main FAB button */
+/* General FAB styling */
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #68B25B;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 0 0 #6A845F;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+/* Sub-FAB styling */
+.sub-fab {
+    position: fixed;
+    bottom: 80px; /* Adjust this to control distance from the main FAB */
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #68B25B;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 0 0 #6A845F;
+    cursor: pointer;
+    transform: scale(0); /* Initially hidden */
+    opacity: 0; /* Initially invisible */
+    pointer-events: none; /* Disable click events initially */
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+/* FAB buttons when expanded */
+.fab.expanded + .sub-fab {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: all; /* Enable click events */
 }
 
 /* Responsive adjustments */

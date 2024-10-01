@@ -8,8 +8,8 @@
     <title>Babby Paint! 🖌️</title>
     <link rel="stylesheet" href="css/index.css" type="text/css" media="screen" title="no title">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
-    </head>
-    <body>
+</head>
+<body>
     <div class="app-container">
         <canvas id="mainCanvas"></canvas>
         <div class="controls">
@@ -25,11 +25,14 @@
                 <li class="grey"></li>
             </ul>
             <button class="utility" id="clearButton">Clear Canvas</button>
-            <button class="utility" id="lockButton">Lock</button>
+        </div>
+        <!-- Floating Action Button (FAB) -->
+        <div class="fab-container">
+            <button class="fab main-fab" id="fabButton">+</button>
+            <button class="fab sub-fab" id="lockButton">Lock app</button>
         </div>
     </div>
     <script src="cordova.js"></script>
     <script src="js/jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/index.js" type="text/javascript" charset="utf-8"></script>
-    </body>
-    
+</body>

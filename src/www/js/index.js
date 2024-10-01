@@ -8,6 +8,7 @@ var mouseDown = false;
 
 var lockButton = $('#lockButton');
 var clearButton = $('#clearButton');
+var fabButton = $('#fabButton'); // Main FAB button
 var isLocked = false;
 
 // Function to resize the canvas
@@ -117,13 +118,21 @@ var tapCountLock = 0;
 
 // Lock button event
 lockButton.on('click', function() {
-
     if (!isLocked){
         cordova.plugins.screenPinning.enterPinnedMode(
             function () {
                 console.log("Pinned mode activated!");
                 isLocked = true;
-                lockButton.text('Tap 4 times quickly to unlock');
+
+                window.plugins.toast.hide();
+                window.plugins.toast.showWithOptions(
+                    {
+                      message: "Tap 4 times quickly to unlock",
+                      duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+                      position: "top"
+                    }
+                  );
+                lockButton.text('Unlock app');
             },
             function (errorMessage) {
                 console.log("Error activating pinned mode:", errorMessage);
@@ -137,7 +146,14 @@ lockButton.on('click', function() {
         // On the first tap, skip comparison logic but update the button text immediately
         if (lastTapLock === 0 || currentTime - lastTapLock >= 1000) {  
             tapCountLock = 1; // First tap starts the counting at 1
-            lockButton.text('Tap 3 more times quickly to unlock');  // Immediate feedback on first tap
+            window.plugins.toast.hide();
+            window.plugins.toast.showWithOptions(
+                {
+                  message: "Tap 3 more times quickly to unlock",
+                  duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+                  position: "top"
+                }
+              );
         } else { 
             tapCountLock++;
             if (tapCountLock >= 4) {
@@ -146,7 +162,7 @@ lockButton.on('click', function() {
                         console.log("Pinned mode deactivated!");
                         isLocked = false;
                         tapCountLock = 0;
-                        lockButton.text('Lock'); 
+                        lockButton.text('Lock app');
                     },
                     function (errorMessage) {
                         console.log("Error deactivating pinned mode:", errorMessage);
@@ -155,26 +171,33 @@ lockButton.on('click', function() {
                 lastTapLock = 0; 
                 tapCountLock = 0; 
             } else {
-                lockButton.text(`Tap ${4 - tapCountLock} more times quickly to unlock`);  
+                var message = "";
+                if (3 - tapCountLock == 2) {
+                    message = `Tap 1 more time quickly to unlock.`; 
+                }
+                else {
+                    message = `Tap ${4 - tapCountLock} more times quickly to unlock.` 
+                }
+                window.plugins.toast.hide();
+                window.plugins.toast.showWithOptions(
+                    {
+                      message: message,
+                      duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+                      position: "top"
+                    }
+                  ); 
             }
         }
         
         lastTapLock = currentTime;
 
-        // Set a timeout to reset the button text after 1000 ms (1 second) of inactivity
-        resetLockTextTimeout = setTimeout(function() {
-            lockButton.text('Lock');
-        }, 1000);
-
     }
-    
 });
 
+// Clear canvas on 3 button click
 var resetClearTextTimeout; 
 var lastTapClear = 0; 
 var tapCountClear = 0;
-
-// Clear canvas on 3 button click
 clearButton.on('click', function() {
     clearTimeout(resetClearTextTimeout); // Clear any existing timeout
     var currentTime = Date.now();
@@ -190,7 +213,13 @@ clearButton.on('click', function() {
             tapCountClear = 0;
             clearButton.text('Clear Canvas'); 
         } else {
-            clearButton.text(`Tap ${3 - tapCountClear} more times quickly to clear`);  
+            if (3 - tapCountClear == 2) {
+                clearButton.text(`Tap 1 more time quickly to clear`); 
+            }
+            else {
+                clearButton.text(`Tap ${3 - tapCountClear} more times quickly to clear`); 
+            }
+             
         }
     }
 
@@ -202,3 +231,11 @@ clearButton.on('click', function() {
     }, 1000);
 });
 
+// Toggle FAB expansion to show or hide the lock button
+fabButton.on('click', function() {
+    console.log('FAB clicked');
+    $(this).toggleClass('expanded');
+    $('.sub-fab').toggleClass('expanded');
+    console.log('FAB class:', $(this).attr('class'));
+    console.log('Sub-FAB class:', $('.sub-fab').attr('class'));
+});
