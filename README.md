@@ -9,11 +9,15 @@ Simple little paint application for kids.
 
 ---
 
-## Using the App
+## Features
 
 BabbyPaint is designed to be as simple as possible, perfect for little hands to start drawing without getting overwhelmed by options. It has a minimal interface with just the essentials: drawing, erasing, and a palette of fun colors. 
 
 It even includes a handy "lock" button, preventing any accidental taps or swipes from leaving the app during creative time. 
+
+No ads to distract your child, no in-app purchases, app doesn't steal your data, and is completely open-source and free!
+
+You can download an apk file in the [releases section](https://github.com/alexjyong/BabbyPaint/releases). Google Play and F-Droid support coming soon!
 
 ### Build It Yourself
 
