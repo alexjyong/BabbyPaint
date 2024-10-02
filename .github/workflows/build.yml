@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  buildEnvAndSetUpApp:
+
+  buildEnvAndSetUpAppApk:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,17 +17,23 @@ jobs:
         run: |
           docker pull ghcr.io/alexjyong/babbypaint:main
 
-      # Prepare environment and build the Cordova app
+      # Prepare environment and build the Cordova apk file
       - name: Prepare environment and build
         run: |
+          echo $JKS_KEYSTORE_BASE64 > upload-keystore.jks.b64
+          base64 -d upload-keystore.jks.b64 > upload-keystore.jks
+          mv upload-keystore.jks src/
           docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
             cordova platform add android --verbose &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
-            cordova build --verbose"
-
+            cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=apk"
+        env:
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
 
       # Find and move the built APK file to the workspace
       - name: Move APK file
@@ -44,3 +51,51 @@ jobs:
         with:
           name: babby-paint-apk-file
           path: /workspace/apk/*.apk
+          
+  buildEnvAndSetUpAppAbb:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the code
+      - uses: actions/checkout@v4
+
+      # Pull the custom Docker image
+      - name: Pull custom Docker image
+        run: |
+          docker pull ghcr.io/alexjyong/babbypaint:main
+
+      # Prepare environment and build the babbypaint aab file
+      - name: Prepare environment and build
+        run: |
+          echo $JKS_KEYSTORE_BASE64 > upload-keystore.jks.b64
+          base64 -d upload-keystore.jks.b64 > upload-keystore.jks
+          mv upload-keystore.jks src/
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
+            rm -rf .github &&
+            cd src &&
+            cordova platform add android --verbose &&
+            cordova plugin add cordova-plugin-x-toast &&
+            cordova plugin add cordova-plugin-screen-pinning --verbose &&
+            cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=bundle"
+        env:
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+
+
+      # Find and move the built aab file to the workspace
+      - name: Move AAB file
+        run: |
+          AAB_PATH=$(find src -name '*app-release.aab')
+          if [ -z "$AAB_PATH" ]; then
+            echo "No AAB file found!"
+            exit 1
+          fi
+          sudo mkdir -p /workspace/aab
+          sudo mv "$AAB_PATH" /workspace/aab/
+
+      # Upload the built aab file as an artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: babby-paint-aab-file
+          path: /workspace/aab/*.aab
