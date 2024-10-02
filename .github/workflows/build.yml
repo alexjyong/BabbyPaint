@@ -75,7 +75,7 @@ jobs:
             cordova platform add android --verbose &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
-            ccordova build android --release -- --keystore=upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=upload --password=$ALIAS_PASSWORD --packageType=bundle"
+            cordova build android --release -- --keystore=upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=upload --password=$ALIAS_PASSWORD --packageType=bundle"
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
