@@ -20,13 +20,19 @@ jobs:
       # Prepare environment and build the Cordova apk file
       - name: Prepare environment and build
         run: |
+          echo $JKS_KEYSTORE_BASE64 > upload-keystore.jks.b64
+          base64 -d -i upload-keystore.jks.b64 -o upload-keystore.jks
           docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
             cordova platform add android --verbose &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
-            cordova build android --release -- --keystore=../my-release-key.keystore --storePassword=password --alias=alias_name --password=password --packageType=apk"
+            cordova build android --release -- --keystore=upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=upload --password=$ALIAS_PASSWORD --packageType=apk"
+        env:
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
 
       # Find and move the built APK file to the workspace
       - name: Move APK file
@@ -69,7 +75,7 @@ jobs:
             cordova platform add android --verbose &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
-            cordova build android --release -- --keystore=../my-release-key.keystore --storePassword=password --alias=alias_name --password=password --packageType=bundle"
+            ccordova build android --release -- --keystore=upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=upload --password=$ALIAS_PASSWORD --packageType=bundle"
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
