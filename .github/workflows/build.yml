@@ -86,7 +86,7 @@ jobs:
       # Find and move the built aab file to the workspace
       - name: Move AAB file
         run: |
-          AAB_PATH=$(find src -name '*.aab')
+          AAB_PATH=$(find src -name '*app-release.aab')
           if [ -z "$AAB_PATH" ]; then
             echo "No AAB file found!"
             exit 1
