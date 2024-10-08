@@ -1,7 +1,7 @@
 {
   "name": "dev.alexjyong.babbypaint",
   "displayName": "BabbyPaint",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple paint app for kids",
   "main": "index.js",
   "scripts": {
