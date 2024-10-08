@@ -1,0 +1,33 @@
+{
+  "name": "cordova-plugin-screen-pinning",
+  "version": "1.1.3",
+  "description": "Cordova plugin exposing Android's screen pinning APIs",
+  "cordova": {
+    "id": "cordova-plugin-screen-pinning",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fdmnio/cordova-plugin-screen-pinning.git"
+  },
+  "keywords": [
+    "cordova",
+    "android",
+    "screen pinning",
+    "pinning",
+    "pin",
+    "window",
+    "locktask",
+    "single purpose device",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "Federico Meini",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fdmnio/cordova-plugin-screen-pinning/issues"
+  },
+  "homepage": "https://github.com/fdmnio/cordova-plugin-screen-pinning#readme"
+}

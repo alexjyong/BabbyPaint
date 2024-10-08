@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="dev.alexjyong.babbypaint" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <feature name="ScreenPinning">
+        <param name="android-package" value="io.fdmn.plugin.ScreenPinning" />
+    </feature>
+    <feature name="Toast">
+        <param name="android-package" value="nl.xservices.plugins.Toast" />
+    </feature>
+    <name>BabbyPaint</name>
+    <description>Simple Paint app for kids</description>
+    <author email="alexjyong@gmail.com" href="https://alexjyong.dev">
+        Alex Yong
+    </author>
+    <content src="index.html" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <icon density="mdpi" src="icon/android/res/mipmap-mdpi/icon.png" />
+    <icon density="hdpi" src="icon/android/res/mipmap-hdpi/icon.png" />
+    <icon density="xhdpi" src="icon/android/res/mipmap-xhdpi/icon.png" />
+    <icon density="xxhdpi" src="icon/android/res/mipmap-xxhdpi/icon.png" />
+    <icon density="xxxhdpi" src="icon/android/res/mipmap-xxxhdpi/icon.png" />
+    <preference name="loglevel" value="DEBUG" />
+    <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/screen/android/play_store_512.png" />
+</widget>
