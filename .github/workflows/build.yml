@@ -26,7 +26,7 @@ jobs:
           docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
-            cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=apk"
+            cordova build --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=apk"
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
@@ -70,7 +70,7 @@ jobs:
           docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
-            cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=bundle"
+            cordova build --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=bundle"
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
