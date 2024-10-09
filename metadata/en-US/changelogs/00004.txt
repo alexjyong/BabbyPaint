@@ -1,0 +1,5 @@
+First release of BabbyPaint:
+
+ * Simple little paint app for kids. No ads, no taking of your data, and a handy lock feature to keep little ones out from the rest of your device!
+
+If you find a bug, have a feature request, or have other concerns, please let me know on the issue tracker at https://github.com/alexjyong/BabbyPaint/issues.

@@ -1,0 +1,38 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <link rel="stylesheet" href="css/index.css">
+    <title>Babby Paint! 🖌️</title>
+    <link rel="stylesheet" href="css/index.css" type="text/css" media="screen" title="no title">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+</head>
+<body>
+    <div class="app-container">
+        <canvas id="mainCanvas"></canvas>
+        <div class="controls">
+            <ul>
+                <li class="red"></li>
+                <li class="blue"></li>
+                <li class="yellow"></li>
+                <li class="green"></li>
+                <li class="orange"></li>
+                <li class="purple"></li>
+                <li class="black"></li>
+                <li class="white"></li>
+                <li class="grey"></li>
+            </ul>
+            <button class="utility" id="clearButton">Clear Canvas</button>
+        </div>
+        <!-- Floating Action Button (FAB) -->
+        <div class="fab-container">
+            <button class="fab main-fab" id="fabButton">+</button>
+            <button class="fab sub-fab" id="lockButton">Lock app</button>
+        </div>
+    </div>
+    <script src="cordova.js"></script>
+    <script src="js/jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/index.js" type="text/javascript" charset="utf-8"></script>
+</body>

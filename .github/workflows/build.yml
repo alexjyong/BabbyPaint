@@ -26,6 +26,8 @@ jobs:
           docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
+            rm -rf platforms/android
+            rm -rf plugins
             cordova platform add android --verbose &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
@@ -73,6 +75,8 @@ jobs:
           docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
             rm -rf .github &&
             cd src &&
+            rm -rf platforms/android
+            rm -rf plugins
             cordova platform add android --verbose &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
