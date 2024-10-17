@@ -44,8 +44,9 @@ jobs:
             echo "No APK file found!"
             exit 1
           fi
-          sudo mkdir -p /workspace/apk
-          sudo mv "$APK_PATH" /workspace/apk/
+          mkdir -p /workspace/apk
+          mv "$APK_PATH" /workspace/apk/
+          ls /workspace/spk
 
       - name: Manually sign the APK
         run: |
