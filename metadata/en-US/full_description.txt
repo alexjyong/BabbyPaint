@@ -3,3 +3,5 @@ BabbyPaint is designed to be as simple as possible, perfect for little hands to 
 It even includes a handy "lock" button, preventing any accidental taps or swipes from leaving the app during creative time.
 
 No ads to distract your child, no in-app purchases, app doesn't steal your data, and is completely open-source and free!
+
+Currently works best in portrait mode on your phone.
