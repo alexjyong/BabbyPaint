@@ -37,26 +37,11 @@ jobs:
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       
-      - name: Move APK file
-        run: |
-          APK_PATH=$(find src -name '*.apk')
-          if [ -z "$APK_PATH" ]; then
-            echo "No APK file found!"
-            exit 1
-          fi
-          mkdir -p /workspace/apk
-          mv "$APK_PATH" /workspace/apk/
-          ls /workspace/spk
 
       - name: Manually sign the APK
         run: |
-          APK_PATH=$(find src -name '*.apk')
-          if [ -z "$APK_PATH" ]; then
-            echo "No APK file found!"
-            exit 1
-          fi
           docker run --rm -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            apksigner sign --ks /workspace/src/upload-keystore.jks --ks-key-alias uploadkey --ks-pass pass:$KEYSTORE_PASSWORD --key-pass pass:$ALIAS_PASSWORD --out /workspace/apk/signed.apk $APK_PATH"
+            apksigner sign --ks /workspace/src/upload-keystore.jks --ks-key-alias uploadkey --ks-pass pass:$KEYSTORE_PASSWORD --key-pass pass:$ALIAS_PASSWORD --out /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk"
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
@@ -65,19 +50,14 @@ jobs:
       # Verify the APK signature using apksigner
       - name: Verify APK signature
         run: |
-          APK_PATH=$(find src -name '*.apk')
-          if [ -z "$APK_PATH" ]; then
-            echo "No APK file found!"
-            exit 1
-          fi
           docker run --rm -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            apksigner verify $APK_PATH"
+            apksigner verify /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk"
       
       # Upload the built APK file as an artifact
       - uses: actions/upload-artifact@v4
         with:
           name: babby-paint-apk-file
-          path: /workspace/apk/*.apk
+          path: /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk
 
   buildEnvAndSetUpAppAab:
     runs-on: ubuntu-latest
@@ -114,13 +94,8 @@ jobs:
       # Manually sign the AAB using jarsigner
       - name: Manually sign the AAB
         run: |
-          AAB_PATH=$(find src -name '*.aab')
-          if [ -z "$AAB_PATH" ]; then
-            echo "No AAB file found!"
-            exit 1
-          fi
           docker run --rm -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            jarsigner -verbose -keystore /workspace/src/upload-keystore.jks -storepass $KEYSTORE_PASSWORD -keypass $ALIAS_PASSWORD $AAB_PATH uploadkey"
+            jarsigner -verbose -keystore /workspace/src/upload-keystore.jks -storepass $KEYSTORE_PASSWORD -keypass $ALIAS_PASSWORD /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab uploadkey"
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
@@ -129,27 +104,12 @@ jobs:
       # Verify the AAB signature using jarsigner
       - name: Verify AAB signature
         run: |
-          AAB_PATH=$(find src -name '*.aab')
-          if [ -z "$AAB_PATH" ]; then
-            echo "No AAB file found!"
-            exit 1
-          fi
           docker run --rm -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            jarsigner -verify -verbose -certs $AAB_PATH"
+            jarsigner -verify -verbose -certs /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab"
 
-      # Find and move the signed AAB file to the workspace
-      - name: Move AAB file
-        run: |
-          AAB_PATH=$(find src -name '*.aab')
-          if [ -z "$AAB_PATH" ]; then
-            echo "No AAB file found!"
-            exit 1
-          fi
-          sudo mkdir -p /workspace/aab
-          sudo mv "$AAB_PATH" /workspace/aab/
 
       # Upload the built AAB file as an artifact
       - uses: actions/upload-artifact@v4
         with:
           name: babby-paint-aab-file
-          path: /workspace/aab/*.aab
+          path: /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab
