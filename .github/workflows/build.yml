@@ -31,23 +31,13 @@ jobs:
             cordova platform add android --verbose &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
-            cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=apk"
+            cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=apk
+            apksigner sign --ks /workspace/src/upload-keystore.jks --ks-key-alias uploadkey --ks-pass pass:$KEYSTORE_PASSWORD --key-pass pass:$ALIAS_PASSWORD --out /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk"
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       
-
-      - name: Manually sign the APK
-        run: |
-          ls  /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
-          docker run --rm -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            apksigner sign --ks /workspace/src/upload-keystore.jks --ks-key-alias uploadkey --ks-pass pass:$KEYSTORE_PASSWORD --key-pass pass:$ALIAS_PASSWORD --out /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk"
-          ls  /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk
-        env:
-          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-          JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
 
       # Verify the APK signature using apksigner
       - name: Verify APK signature
