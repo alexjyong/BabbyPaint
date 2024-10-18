@@ -32,7 +32,11 @@ jobs:
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
             cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=apk
-            apksigner sign --ks /workspace/src/upload-keystore.jks --ks-key-alias uploadkey --ks-pass pass:$KEYSTORE_PASSWORD --key-pass pass:$ALIAS_PASSWORD --out /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk"
+            jarsigner -verbose -keystore /workspace/src/upload-keystore.jks \
+            -storepass $KEYSTORE_PASSWORD \
+            -keypass $ALIAS_PASSWORD \
+            /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk \
+            uploadkey"
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
@@ -43,13 +47,13 @@ jobs:
       - name: Verify APK signature
         run: |
           docker run --rm -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            apksigner verify /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk"
+            jarsigner -verify -verbose -certs /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk"
       
       # Upload the built APK file as an artifact
       - uses: actions/upload-artifact@v4
         with:
           name: babby-paint-apk-file
-          path: /workspace/src/platforms/android/app/build/outputs/apk/release/signed.apk
+          path: /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
 
   buildEnvAndSetUpAppAab:
     runs-on: ubuntu-latest
