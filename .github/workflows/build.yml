@@ -113,4 +113,4 @@ jobs:
         with:
           name: babby-paint-aab-file
           if-no-files-found: error
-          path: /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab
+          path: src/platforms/android/app/build/outputs/bundle/release/app-release.aab
