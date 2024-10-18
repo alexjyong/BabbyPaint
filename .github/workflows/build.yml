@@ -38,7 +38,15 @@ jobs:
             --key-pass pass:$ALIAS_PASSWORD \
             /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
             apksigner verify --verbose --print-certs /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk"
-            ls -al /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
+            APK_PATH=$(find src -name '*.apk')
+            if [ -z "$APK_PATH" ]; then
+              echo "No APK file found!"
+              exit 1
+            fi
+            echo $APK_PATH
+            sudo mkdir -p /workspace/apk
+            sudo mv "$APK_PATH" /workspace/apk/
+
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
@@ -49,7 +57,7 @@ jobs:
         with:
           name: babby-paint-apk-file
           if-no-files-found: error
-          path: /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
+          path: /workspace/apk/*.apk
 
   buildEnvAndSetUpAppAab:
     runs-on: ubuntu-latest
