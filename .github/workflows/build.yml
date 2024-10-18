@@ -38,6 +38,7 @@ jobs:
             --key-pass pass:$ALIAS_PASSWORD \
             /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
             apksigner verify --verbose --print-certs /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk"
+            ls -al /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
         env:
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
@@ -47,6 +48,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: babby-paint-apk-file
+          if-no-files-found: error
           path: /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
 
   buildEnvAndSetUpAppAab:
@@ -102,4 +104,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: babby-paint-aab-file
+          if-no-files-found: error
           path: /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab
