@@ -19,6 +19,7 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
   ];
   module.exports.metadata = {
     "cordova-plugin-screen-pinning": "1.1.3",
-    "cordova-plugin-x-toast": "2.7.3"
+    "cordova-plugin-x-toast": "2.7.3",
+    "cordova-custom-config": "5.1.1"
   };
 });
