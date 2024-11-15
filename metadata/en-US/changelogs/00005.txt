@@ -1,0 +1,5 @@
+Version 0.0.5 release!
+
+ * Removed unneeded and unused internet permissions.
+
+If you find a bug, have a feature request, or have other concerns, please let me know on the issue tracker at https://github.com/alexjyong/BabbyPaint/issues.

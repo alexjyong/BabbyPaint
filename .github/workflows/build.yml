@@ -29,6 +29,7 @@ jobs:
             rm -rf platforms/android
             rm -rf plugins
             cordova platform add android --verbose &&
+            cordova plugin add cordova-custom-config &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
             cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=apk
@@ -74,6 +75,7 @@ jobs:
             rm -rf platforms/android
             rm -rf plugins
             cordova platform add android --verbose &&
+            cordova plugin add cordova-custom-config &&
             cordova plugin add cordova-plugin-x-toast &&
             cordova plugin add cordova-plugin-screen-pinning --verbose &&
             cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=bundle"
