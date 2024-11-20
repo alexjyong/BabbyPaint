@@ -95,27 +95,28 @@ function handleTouches(event, isStart = false) {
     }
 }
 
-// Update touchstart, touchmove, and touchend handlers
+// Update touchstart, touchmove, and touchend handlers for the canvas only
 $canvas.on("touchstart", function (e) {
-    e.preventDefault();
     handleTouches(e.originalEvent, true);
 }).on("touchmove", function (e) {
-    e.preventDefault();
     handleTouches(e.originalEvent);
 }).on("touchend touchcancel", function () {
     mouseDown = false;
 });
 
-// Prevent default behavior on the entire document for touchmove
+// Prevent canvas touch interactions from interfering with button touches
 document.addEventListener(
-    "touchmove",
+    "touchstart",
     function (e) {
-        e.preventDefault(); // Prevent scrolling or other default actions
+        // Allow touches on buttons and other elements to work independently
+        if (!e.target.closest("#mainCanvas")) {
+            e.stopPropagation();
+        }
     },
-    { passive: false }
+    { passive: true }
 );
 
-// On mouse events
+// On mouse events for canvas
 $canvas.mousedown(function (e) {
     lastEvent = e;
     mouseDown = true;
