@@ -43,6 +43,9 @@ function onDeviceReady() {
     console.log('Cordova is ready');
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+
+    // Ensure buttons respond to touch independently
+    $(".button").css("touch-action", "manipulation");
 }
 
 // Color selection
@@ -97,24 +100,14 @@ function handleTouches(event, isStart = false) {
 
 // Update touchstart, touchmove, and touchend handlers for the canvas only
 $canvas.on("touchstart", function (e) {
+    e.preventDefault(); // Prevent touch scrolling for canvas touches
     handleTouches(e.originalEvent, true);
 }).on("touchmove", function (e) {
+    e.preventDefault();
     handleTouches(e.originalEvent);
 }).on("touchend touchcancel", function () {
     mouseDown = false;
 });
-
-// Prevent canvas touch interactions from interfering with button touches
-document.addEventListener(
-    "touchstart",
-    function (e) {
-        // Allow touches on buttons and other elements to work independently
-        if (!e.target.closest("#mainCanvas")) {
-            e.stopPropagation();
-        }
-    },
-    { passive: true }
-);
 
 // On mouse events for canvas
 $canvas.mousedown(function (e) {
@@ -135,6 +128,13 @@ $canvas.mousedown(function (e) {
     mouseDown = false;
 }).mouseleave(function () {
     $canvas.mouseup();
+});
+
+// Add touch-action manipulation to buttons to make them interactive
+$(".button").on("touchstart", function (e) {
+    // Allow buttons to respond to touches while drawing
+    console.log(`${$(this).text()} button touched`);
+    e.stopPropagation();
 });
 
 var resetLockTextTimeout; 
