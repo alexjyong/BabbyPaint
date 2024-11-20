@@ -64,32 +64,56 @@ function getTouchPos(touchEvent) {
     };
 }
 
-// On touch events
-$canvas.on('touchstart', function (e) {
-    e.preventDefault();
-    var touchPos = getTouchPos(e.originalEvent);
-    lastEvent = touchPos;
-    mouseDown = true;
-}).on('touchmove', function (e) {
-    e.preventDefault();
-    if (mouseDown) {
-        var touchPos = getTouchPos(e.originalEvent);
-        context.beginPath();
-        context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
-        context.lineTo(touchPos.offsetX, touchPos.offsetY);
-        context.strokeStyle = color;
-        context.lineWidth = 5;
-        context.lineCap = 'round';
-        context.stroke();
-        lastEvent = touchPos;
+// Function to handle multitouch drawing
+function handleTouches(event, isStart = false) {
+    const touches = event.touches;
+    for (let i = 0; i < touches.length; i++) {
+        const touch = touches[i];
+        const rect = $canvas[0].getBoundingClientRect();
+        const isInsideCanvas =
+            touch.clientX >= rect.left &&
+            touch.clientX <= rect.right &&
+            touch.clientY >= rect.top &&
+            touch.clientY <= rect.bottom;
+
+        if (isInsideCanvas) {
+            const touchPos = getTouchPos({ touches: [touch] });
+            if (isStart) {
+                lastEvent = touchPos;
+                mouseDown = true;
+            } else if (mouseDown) {
+                context.beginPath();
+                context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
+                context.lineTo(touchPos.offsetX, touchPos.offsetY);
+                context.strokeStyle = color;
+                context.lineWidth = 5;
+                context.lineCap = "round";
+                context.stroke();
+                lastEvent = touchPos;
+            }
+        }
     }
-}).on('touchend', function () {
+}
+
+// Update touchstart, touchmove, and touchend handlers
+$canvas.on("touchstart", function (e) {
+    e.preventDefault();
+    handleTouches(e.originalEvent, true);
+}).on("touchmove", function (e) {
+    e.preventDefault();
+    handleTouches(e.originalEvent);
+}).on("touchend touchcancel", function () {
     mouseDown = false;
 });
 
-$canvas.on('touchcancel', function () {
-    mouseDown = false;
-});
+// Prevent default behavior on the entire document for touchmove
+document.addEventListener(
+    "touchmove",
+    function (e) {
+        e.preventDefault(); // Prevent scrolling or other default actions
+    },
+    { passive: false }
+);
 
 // On mouse events
 $canvas.mousedown(function (e) {
