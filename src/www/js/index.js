@@ -43,9 +43,6 @@ function onDeviceReady() {
     console.log('Cordova is ready');
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-
-    // Ensure buttons respond to touch independently
-    $(".button").css("touch-action", "manipulation");
 }
 
 // Color selection
@@ -98,9 +95,9 @@ function handleTouches(event, isStart = false) {
     }
 }
 
-// Update touchstart, touchmove, and touchend handlers for the canvas only
+// Update touchstart, touchmove, and touchend handlers
 $canvas.on("touchstart", function (e) {
-    e.preventDefault(); // Prevent touch scrolling for canvas touches
+    e.preventDefault();
     handleTouches(e.originalEvent, true);
 }).on("touchmove", function (e) {
     e.preventDefault();
@@ -109,7 +106,16 @@ $canvas.on("touchstart", function (e) {
     mouseDown = false;
 });
 
-// On mouse events for canvas
+// Prevent default behavior on the entire document for touchmove
+document.addEventListener(
+    "touchmove",
+    function (e) {
+        e.preventDefault(); // Prevent scrolling or other default actions
+    },
+    { passive: false }
+);
+
+// On mouse events
 $canvas.mousedown(function (e) {
     lastEvent = e;
     mouseDown = true;
@@ -128,13 +134,6 @@ $canvas.mousedown(function (e) {
     mouseDown = false;
 }).mouseleave(function () {
     $canvas.mouseup();
-});
-
-// Add touch-action manipulation to buttons to make them interactive
-$(".button").on("touchstart", function (e) {
-    // Allow buttons to respond to touches while drawing
-    console.log(`${$(this).text()} button touched`);
-    e.stopPropagation();
 });
 
 var resetLockTextTimeout; 
