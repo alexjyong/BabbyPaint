@@ -15,13 +15,11 @@
   "devDependencies": {
     "cordova-android": "^13.0.0",
     "cordova-custom-config": "^5.1.1",
-    "cordova-plugin-screen-pinning": "^1.1.3",
-    "cordova-plugin-x-toast": "^2.7.3"
+    "cordova-plugin-screen-pinning": "^1.1.3"
   },
   "cordova": {
     "plugins": {
       "cordova-plugin-screen-pinning": {},
-      "cordova-plugin-x-toast": {},
       "cordova-custom-config": {}
     },
     "platforms": [
