@@ -1,7 +1,7 @@
 {
   "name": "dev.alexjyong.babbypaint",
   "displayName": "BabbyPaint",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A simple paint app for kids",
   "main": "index.js",
   "scripts": {
@@ -15,13 +15,11 @@
   "devDependencies": {
     "cordova-android": "^13.0.0",
     "cordova-custom-config": "^5.1.1",
-    "cordova-plugin-screen-pinning": "^1.1.3",
-    "cordova-plugin-x-toast": "^2.7.3"
+    "cordova-plugin-screen-pinning": "^1.1.3"
   },
   "cordova": {
     "plugins": {
       "cordova-plugin-screen-pinning": {},
-      "cordova-plugin-x-toast": {},
       "cordova-custom-config": {}
     },
     "platforms": [

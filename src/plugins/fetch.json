@@ -7,14 +7,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-x-toast": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-x-toast@^2.7.3"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-custom-config": {
     "source": {
       "type": "registry",
