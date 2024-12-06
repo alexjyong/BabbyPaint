@@ -38,6 +38,31 @@ function resizeCanvas() {
     context.scale(dpr, dpr);
 }
 
+function showCustomToast(message, duration = 3000) {
+    const container = document.getElementById("custom-toast-container");
+    
+    // Create the toast element
+    const toast = document.createElement("div");
+    toast.classList.add("custom-toast");
+    toast.textContent = message;
+    
+    // Append to the container
+    container.appendChild(toast);
+    
+    // Show the toast with animation
+    requestAnimationFrame(() => {
+        toast.classList.add("show");
+    });
+
+    // Remove the toast after the duration
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => {
+            toast.remove();
+        }, 300); // Match CSS transition duration
+    }, duration);
+}
+
 // Call resizeCanvas on load and window resize
 function onDeviceReady() {
     console.log('Cordova is ready');
@@ -64,32 +89,56 @@ function getTouchPos(touchEvent) {
     };
 }
 
-// On touch events
-$canvas.on('touchstart', function (e) {
-    e.preventDefault();
-    var touchPos = getTouchPos(e.originalEvent);
-    lastEvent = touchPos;
-    mouseDown = true;
-}).on('touchmove', function (e) {
-    e.preventDefault();
-    if (mouseDown) {
-        var touchPos = getTouchPos(e.originalEvent);
-        context.beginPath();
-        context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
-        context.lineTo(touchPos.offsetX, touchPos.offsetY);
-        context.strokeStyle = color;
-        context.lineWidth = 5;
-        context.lineCap = 'round';
-        context.stroke();
-        lastEvent = touchPos;
+// Function to handle multitouch drawing
+function handleTouches(event, isStart = false) {
+    const touches = event.touches;
+    for (let i = 0; i < touches.length; i++) {
+        const touch = touches[i];
+        const rect = $canvas[0].getBoundingClientRect();
+        const isInsideCanvas =
+            touch.clientX >= rect.left &&
+            touch.clientX <= rect.right &&
+            touch.clientY >= rect.top &&
+            touch.clientY <= rect.bottom;
+
+        if (isInsideCanvas) {
+            const touchPos = getTouchPos({ touches: [touch] });
+            if (isStart) {
+                lastEvent = touchPos;
+                mouseDown = true;
+            } else if (mouseDown) {
+                context.beginPath();
+                context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
+                context.lineTo(touchPos.offsetX, touchPos.offsetY);
+                context.strokeStyle = color;
+                context.lineWidth = 5;
+                context.lineCap = "round";
+                context.stroke();
+                lastEvent = touchPos;
+            }
+        }
     }
-}).on('touchend', function () {
+}
+
+// Update touchstart, touchmove, and touchend handlers
+$canvas.on("touchstart", function (e) {
+    e.preventDefault();
+    handleTouches(e.originalEvent, true);
+}).on("touchmove", function (e) {
+    e.preventDefault();
+    handleTouches(e.originalEvent);
+}).on("touchend touchcancel", function () {
     mouseDown = false;
 });
 
-$canvas.on('touchcancel', function () {
-    mouseDown = false;
-});
+// Prevent default behavior on the entire document for touchmove
+document.addEventListener(
+    "touchmove",
+    function (e) {
+        e.preventDefault(); // Prevent scrolling or other default actions
+    },
+    { passive: false }
+);
 
 // On mouse events
 $canvas.mousedown(function (e) {
@@ -118,81 +167,59 @@ var tapCountLock = 0;
 
 // Lock button event
 lockButton.on('click', function() {
-    if (!isLocked){
+    if (!isLocked) {
         cordova.plugins.screenPinning.enterPinnedMode(
             function () {
                 console.log("Pinned mode activated!");
                 isLocked = true;
 
-                window.plugins.toast.hide();
-                window.plugins.toast.showWithOptions(
-                    {
-                      message: "Tap 4 times quickly to unlock",
-                      duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
-                      position: "top"
-                    }
-                  );
+                // Show custom toast
+                showCustomToast("Tap 4 times quickly to unlock", 2000);
                 lockButton.text('Unlock app');
             },
             function (errorMessage) {
                 console.log("Error activating pinned mode:", errorMessage);
             }
         );
-    }
-    else {
+    } else {
         clearTimeout(resetLockTextTimeout); 
         var currentTime = Date.now();
+        if (lastTapLock === 0 || currentTime - lastTapLock >= 1000) {  
+                tapCountLock = 1; // First tap starts the counting at 1
+                showCustomToast("Tap 3 more times quickly to unlock", 2000);
+            } else { 
+                tapCountLock++;
+                if (tapCountLock >= 4) {
+                    cordova.plugins.screenPinning.exitPinnedMode(
+                        function () {
+                            console.log("Pinned mode deactivated!");
+                            isLocked = false;
+                            tapCountLock = 0;
+                            lockButton.text('Lock app');
+                            showCustomToast("Pinned mode deactivated", 2000);
+                        },
+                        function (errorMessage) {
+                            console.log("Error deactivating pinned mode:", errorMessage);
+                            showCustomToast("Error deactivating pinned mode", 2000);
+                        }
+                    );
+                    lastTapLock = 0; 
+                    tapCountLock = 0; 
+                } else {
+                    let message = "";
+                    if (3 - tapCountLock == 2) {
+                        message = "Tap 1 more time quickly to unlock.";
+                    } else {
+                        message = `Tap ${4 - tapCountLock} more times quickly to unlock.`;
+                    }
+                    showCustomToast(message, 2000);
+                }
+            }
+            lastTapLock = currentTime;
+        }
+    });
 
         // On the first tap, skip comparison logic but update the button text immediately
-        if (lastTapLock === 0 || currentTime - lastTapLock >= 1000) {  
-            tapCountLock = 1; // First tap starts the counting at 1
-            window.plugins.toast.hide();
-            window.plugins.toast.showWithOptions(
-                {
-                  message: "Tap 3 more times quickly to unlock",
-                  duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
-                  position: "top"
-                }
-              );
-        } else { 
-            tapCountLock++;
-            if (tapCountLock >= 4) {
-                cordova.plugins.screenPinning.exitPinnedMode(
-                    function () {
-                        console.log("Pinned mode deactivated!");
-                        isLocked = false;
-                        tapCountLock = 0;
-                        lockButton.text('Lock app');
-                    },
-                    function (errorMessage) {
-                        console.log("Error deactivating pinned mode:", errorMessage);
-                    }
-                );
-                lastTapLock = 0; 
-                tapCountLock = 0; 
-            } else {
-                var message = "";
-                if (3 - tapCountLock == 2) {
-                    message = `Tap 1 more time quickly to unlock.`; 
-                }
-                else {
-                    message = `Tap ${4 - tapCountLock} more times quickly to unlock.` 
-                }
-                window.plugins.toast.hide();
-                window.plugins.toast.showWithOptions(
-                    {
-                      message: message,
-                      duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
-                      position: "top"
-                    }
-                  ); 
-            }
-        }
-        
-        lastTapLock = currentTime;
-
-    }
-});
 
 // Clear canvas on 3 button click
 var resetClearTextTimeout; 
