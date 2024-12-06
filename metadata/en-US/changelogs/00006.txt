@@ -1,0 +1,4 @@
+Version 0.0.6 release!
+
+ * Improved the UI. Users can now use the canvas while touching another part of the screen.
+ * Updated toast appearance.
