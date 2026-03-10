@@ -2,106 +2,192 @@ name: Build Android Version
 
 on:
   workflow_dispatch:
+    inputs:
+      framework:
+        description: 'Build framework'
+        required: true
+        default: 'capacitor'
+        type: choice
+        options:
+          - capacitor
+          - cordova
+      output_type:
+        description: 'Output type'
+        required: true
+        default: 'apk'
+        type: choice
+        options:
+          - apk
+          - aab
+          - both
 
+# ─────────────────────────────────────────────────────────────────────────────
+# CAPACITOR BUILD
+# ─────────────────────────────────────────────────────────────────────────────
 jobs:
 
-  buildEnvAndSetUpAppApk:
+  capacitor-build:
+    name: Capacitor – ${{ inputs.output_type }}
     runs-on: ubuntu-latest
+    if: inputs.framework == 'capacitor'
 
     steps:
-      # Check out the code
       - uses: actions/checkout@v4
 
-      # Pull the custom Docker image
-      - name: Pull custom Docker image
-        run: |
-          docker pull ghcr.io/alexjyong/babbypaint:main
-
-      # Prepare environment and build the Cordova apk file
-      - name: Prepare environment, build, sign and upload.
-        run: |
-          echo $JKS_KEYSTORE_BASE64 > upload-keystore.jks.b64
-          base64 -d upload-keystore.jks.b64 > upload-keystore.jks
-          mv upload-keystore.jks src/
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            rm -rf .github &&
-            cd src &&
-            rm -rf platforms/android
-            rm -rf plugins
-            cordova platform add android --verbose &&
-            cordova plugin add cordova-custom-config &&
-            cordova plugin add cordova-plugin-screen-pinning --verbose &&
-            cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=apk
-            apksigner sign --ks /workspace/src/upload-keystore.jks \
-            --ks-key-alias uploadkey \
-            --ks-pass pass:$KEYSTORE_PASSWORD \
-            --key-pass pass:$ALIAS_PASSWORD \
-            /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
-            apksigner verify --verbose --print-certs /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk"
-        env:
-          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-          JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-      
-      # Upload the built APK file as an artifact
-      - uses: actions/upload-artifact@v4
+      - uses: actions/setup-java@v4
         with:
-          name: babby-paint-apk-file
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies and sync
+        run: |
+          cd app
+          npm install
+          npx cap sync android
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.JKS_KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
+      - name: Make gradlew executable
+        run: chmod +x app/android/gradlew
+
+      - name: Build release APK
+        if: inputs.output_type == 'apk' || inputs.output_type == 'both'
+        run: |
+          cd app/android
+          ./gradlew assembleRelease --quiet
+          apksigner sign \
+            --ks ../../keystore.jks \
+            --ks-key-alias uploadkey \
+            --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
+            --key-pass pass:${{ secrets.ALIAS_PASSWORD }} \
+            --out app/build/outputs/apk/release/app-release.apk \
+            app/build/outputs/apk/release/app-release-unsigned.apk
+          apksigner verify --verbose app/build/outputs/apk/release/app-release.apk
+
+      - name: Build release AAB
+        if: inputs.output_type == 'aab' || inputs.output_type == 'both'
+        run: |
+          cd app/android
+          ./gradlew bundleRelease --quiet
+          jarsigner -verbose \
+            -keystore ../../keystore.jks \
+            -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
+            -keypass ${{ secrets.ALIAS_PASSWORD }} \
+            app/build/outputs/bundle/release/app-release.aab uploadkey
+
+      - name: Upload APK artifact
+        if: inputs.output_type == 'apk' || inputs.output_type == 'both'
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacitor-apk
+          if-no-files-found: error
+          path: app/android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload AAB artifact
+        if: inputs.output_type == 'aab' || inputs.output_type == 'both'
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacitor-aab
+          if-no-files-found: error
+          path: app/android/app/build/outputs/bundle/release/app-release.aab
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CORDOVA BUILD  (Docker)
+# ─────────────────────────────────────────────────────────────────────────────
+
+  cordova-build:
+    name: Cordova – ${{ inputs.output_type }}
+    runs-on: ubuntu-latest
+    if: inputs.framework == 'cordova'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pull Docker image
+        run: docker pull ghcr.io/alexjyong/babbypaint:main
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.JKS_KEYSTORE_BASE64 }}" | base64 -d > src/upload-keystore.jks
+
+      - name: Build release APK
+        if: inputs.output_type == 'apk' || inputs.output_type == 'both'
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+        run: |
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged \
+            ghcr.io/alexjyong/babbypaint:main sh -c "
+              cd src &&
+              rm -rf platforms/android plugins &&
+              cordova platform add android --verbose &&
+              cordova plugin add cordova-custom-config &&
+              cordova plugin add cordova-plugin-screen-pinning --verbose &&
+              cordova build android --release -- \
+                --keystore=/workspace/src/upload-keystore.jks \
+                --storePassword=$KEYSTORE_PASSWORD \
+                --alias=uploadkey \
+                --password=$ALIAS_PASSWORD \
+                --packageType=apk &&
+              apksigner sign \
+                --ks /workspace/src/upload-keystore.jks \
+                --ks-key-alias uploadkey \
+                --ks-pass pass:$KEYSTORE_PASSWORD \
+                --key-pass pass:$ALIAS_PASSWORD \
+                /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk &&
+              apksigner verify --verbose \
+                /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
+            "
+
+      - name: Build release AAB
+        if: inputs.output_type == 'aab' || inputs.output_type == 'both'
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+        run: |
+          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged \
+            ghcr.io/alexjyong/babbypaint:main sh -c "
+              cd src &&
+              rm -rf platforms/android plugins &&
+              cordova platform add android --verbose &&
+              cordova plugin add cordova-custom-config &&
+              cordova plugin add cordova-plugin-screen-pinning --verbose &&
+              cordova build android --release -- \
+                --keystore=/workspace/src/upload-keystore.jks \
+                --storePassword=$KEYSTORE_PASSWORD \
+                --alias=uploadkey \
+                --password=$ALIAS_PASSWORD \
+                --packageType=bundle &&
+              jarsigner -verbose \
+                -keystore /workspace/src/upload-keystore.jks \
+                -storepass $KEYSTORE_PASSWORD \
+                -keypass $ALIAS_PASSWORD \
+                /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab uploadkey
+            "
+
+      - name: Upload APK artifact
+        if: inputs.output_type == 'apk' || inputs.output_type == 'both'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cordova-apk
           if-no-files-found: error
           path: src/platforms/android/app/build/outputs/apk/release/app-release.apk
 
-  buildEnvAndSetUpAppAab:
-    runs-on: ubuntu-latest
-
-    steps:
-      # Check out the code
-      - uses: actions/checkout@v4
-
-      # Pull the custom Docker image
-      - name: Pull custom Docker image
-        run: |
-          docker pull ghcr.io/alexjyong/babbypaint:main
-
-      # Prepare environment and build the babbypaint aab file
-      - name: Prepare environment and build
-        run: |
-          echo $JKS_KEYSTORE_BASE64 > upload-keystore.jks.b64
-          base64 -d upload-keystore.jks.b64 > upload-keystore.jks
-          mv upload-keystore.jks src/
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            rm -rf .github &&
-            cd src &&
-            rm -rf platforms/android
-            rm -rf plugins
-            cordova platform add android --verbose &&
-            cordova plugin add cordova-custom-config &&
-            cordova plugin add cordova-plugin-screen-pinning --verbose &&
-            cordova build android --release -- --keystore=/workspace/src/upload-keystore.jks --storePassword=$KEYSTORE_PASSWORD --alias=uploadkey --password=$ALIAS_PASSWORD --packageType=bundle"
-        env:
-          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-          JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-
-      # Manually sign the AAB using jarsigner
-      - name: Manually sign the AAB
-        run: |
-          docker run --rm -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            jarsigner -verbose -keystore /workspace/src/upload-keystore.jks -storepass $KEYSTORE_PASSWORD -keypass $ALIAS_PASSWORD /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab uploadkey"
-        env:
-          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-          JKS_KEYSTORE_BASE64: ${{ secrets.JKS_KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-
-      # Verify the AAB signature using jarsigner
-      - name: Verify AAB signature
-        run: |
-          docker run --rm -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            jarsigner -verify -verbose -certs /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab"
-
-
-      # Upload the built AAB file as an artifact
-      - uses: actions/upload-artifact@v4
+      - name: Upload AAB artifact
+        if: inputs.output_type == 'aab' || inputs.output_type == 'both'
+        uses: actions/upload-artifact@v4
         with:
-          name: babby-paint-aab-file
+          name: cordova-aab
           if-no-files-found: error
           path: src/platforms/android/app/build/outputs/bundle/release/app-release.aab
