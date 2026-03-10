@@ -43,6 +43,7 @@ jobs:
         run: |
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          echo "$ANDROID_SDK_ROOT/build-tools/34.0.0" >> $GITHUB_PATH
 
       - uses: actions/setup-node@v4
         with:
@@ -71,9 +72,9 @@ jobs:
             --ks-key-alias uploadkey \
             --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
             --key-pass pass:${{ secrets.ALIAS_PASSWORD }} \
-            --out app/build/outputs/apk/release/app-release.apk \
+            --out app/build/outputs/apk/release/babbypaint-release.apk \
             app/build/outputs/apk/release/app-release-unsigned.apk
-          apksigner verify --verbose app/build/outputs/apk/release/app-release.apk
+          apksigner verify --verbose app/build/outputs/apk/release/babbypaint-release.apk
 
       - name: Build release AAB
         if: inputs.output_type == 'aab' || inputs.output_type == 'both'
@@ -85,6 +86,8 @@ jobs:
             -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
             -keypass ${{ secrets.ALIAS_PASSWORD }} \
             app/build/outputs/bundle/release/app-release.aab uploadkey
+          mv app/build/outputs/bundle/release/app-release.aab \
+             app/build/outputs/bundle/release/babbypaint-release.aab
 
       - name: Upload APK artifact
         if: inputs.output_type == 'apk' || inputs.output_type == 'both'
@@ -92,7 +95,7 @@ jobs:
         with:
           name: capacitor-apk
           if-no-files-found: error
-          path: app/android/app/build/outputs/apk/release/app-release.apk
+          path: app/android/app/build/outputs/apk/release/babbypaint-release.apk
 
       - name: Upload AAB artifact
         if: inputs.output_type == 'aab' || inputs.output_type == 'both'
@@ -100,7 +103,7 @@ jobs:
         with:
           name: capacitor-aab
           if-no-files-found: error
-          path: app/android/app/build/outputs/bundle/release/app-release.aab
+          path: app/android/app/build/outputs/bundle/release/babbypaint-release.aab
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CORDOVA BUILD  (Docker)

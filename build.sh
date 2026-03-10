@@ -115,8 +115,16 @@ build_capacitor() {
         die "ANDROID_HOME / ANDROID_SDK_ROOT not set. Run inside the devcontainer or set the variable."
     fi
 
+    # Ensure apksigner is on PATH (lives in build-tools, not platform-tools)
+    SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+    APKSIGNER_BIN="$(find "$SDK_ROOT/build-tools" -name "apksigner" 2>/dev/null | sort -rV | head -1)"
+    if [[ -z "$APKSIGNER_BIN" ]]; then
+        die "apksigner not found under $SDK_ROOT/build-tools. Install Android build-tools."
+    fi
+    export PATH="$(dirname "$APKSIGNER_BIN"):$PATH"
+
     info "Syncing web assets..."
-    (cd "$APP_DIR" && npm install --silent && npx cap sync android --inline 2>&1 | grep -v "^$")
+    (cd "$APP_DIR" && npm install --silent && npx cap sync android 2>&1 | grep -v "^$")
 
     GRADLEW="$APP_DIR/android/gradlew"
     chmod +x "$GRADLEW"
@@ -136,7 +144,7 @@ build_capacitor() {
     if [[ "$OUTPUT" == "apk" ]]; then
         if [[ "$VARIANT" == "release" ]]; then
             UNSIGNED="$APP_DIR/android/app/build/outputs/apk/release/app-release-unsigned.apk"
-            SIGNED="$APP_DIR/android/app/build/outputs/apk/release/app-release.apk"
+            SIGNED="$APP_DIR/android/app/build/outputs/apk/release/babbypaint-release.apk"
             info "Signing APK..."
             apksigner sign \
                 --ks "$KEYSTORE" \
@@ -148,18 +156,22 @@ build_capacitor() {
             apksigner verify --verbose "$SIGNED"
             success "APK ready: $SIGNED"
         else
-            APK="$APP_DIR/android/app/build/outputs/apk/debug/app-debug.apk"
-            success "APK ready: $APK"
+            SRC="$APP_DIR/android/app/build/outputs/apk/debug/app-debug.apk"
+            DEST="$APP_DIR/android/app/build/outputs/apk/debug/babbypaint-debug.apk"
+            mv "$SRC" "$DEST"
+            success "APK ready: $DEST"
         fi
     else
-        AAB="$APP_DIR/android/app/build/outputs/bundle/release/app-release.aab"
+        AAB_SRC="$APP_DIR/android/app/build/outputs/bundle/release/app-release.aab"
+        AAB="$APP_DIR/android/app/build/outputs/bundle/release/babbypaint-release.aab"
         info "Signing AAB..."
         jarsigner \
             -verbose \
             -keystore "$KEYSTORE" \
             -storepass "$KS_PASS" \
             -keypass "$KEY_PASS" \
-            "$AAB" "$ALIAS"
+            "$AAB_SRC" "$ALIAS"
+        mv "$AAB_SRC" "$AAB"
         success "AAB ready: $AAB"
     fi
 }
@@ -238,7 +250,6 @@ build_cordova() {
         if [[ "$OUTPUT" == "aab" ]]; then
             warn "AAB output is uncommon for debug builds; proceeding anyway."
         fi
-        GRADLE_TASK="assemble$(tr '[:lower:]' '[:upper:]' <<< "${OUTPUT:0:1}")${OUTPUT:1}Debug"
         info "Building debug $OUTPUT..."
         docker run --rm -i \
             -v "$SCRIPT_DIR:/workspace" \
