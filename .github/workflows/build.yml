@@ -16,13 +16,13 @@ on:
 jobs:
 
   build:
-    name: Capacitor – ${{ inputs.output_type }}
+    name: Capacitor ${{ inputs.output_type }}
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -33,9 +33,9 @@ jobs:
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
           echo "$ANDROID_SDK_ROOT/build-tools/34.0.0" >> $GITHUB_PATH
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install dependencies and sync
         run: |
@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload APK artifact
         if: inputs.output_type == 'apk' || inputs.output_type == 'both'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: babbypaint-apk
           if-no-files-found: error
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload AAB artifact
         if: inputs.output_type == 'aab' || inputs.output_type == 'both'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: babbypaint-aab
           if-no-files-found: error

@@ -20,32 +20,23 @@ No ads to distract your child, no in-app purchases, app doesn't steal your data,
 
 You can download an apk file in the [releases section](https://github.com/alexjyong/BabbyPaint/releases).
 
+You can also get the latest version in [F-Droid](https://f-droid.org/en/packages/dev.alexjyong.babbypaint/).
+
 ### Build It Yourself
 
 If you're curious or want to make your own custom tweaks, you can build BabbyPaint yourself. Here's how you can get it running from source using Codespaces (or your preferred local environment):
 
-1. First, pull the custom Docker image:
-    ```bash
-    docker pull ghcr.io/alexjyong/babbypaint:main
-    ```
+1. If you are in codespaces, the environment set up will be done for you automatically through the devcontainer definition. [.devcontainer](.devcontainer/devcontainer.json)
 
-2. Clone the repository and enter the project folder:
-    ```bash
-    git clone https://github.com/YOUR_USERNAME/babbypaint.git
-    cd babbypaint
-    ```
+Otherwise, you will need to install Node 24, and all dependencies.
 
-3. Now you're ready to prepare the environment and build the APK for Android:
-    ```bash
-    docker run --rm -i -v $PWD:/workspace -w /workspace --privileged ghcr.io/alexjyong/babbypaint:main sh -c "
-            cd src &&
-            cordova platform add android --verbose &&
-            cordova plugin add cordova-plugin-x-toast &&
-            cordova plugin add cordova-plugin-screen-pinning --verbose &&
-            cordova build --verbose"
-    ```
+```bash
+cd app
+npm install
+npx cap sync android
+```
 
-4. Once the build process finishes, you’ll have your APK ready in the `/src/platforms/android/app/build/outputs/apk/` directory.
+2. Afterwards, you can run [build.sh](build.sh) to build your apk file.
 
 Feel free to modify and play around with the source code to fit your needs! Whether you’re building this for your own kids or just curious about how it works, it’s easy to jump in and get started. 
 
