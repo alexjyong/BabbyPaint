@@ -2,7 +2,8 @@
 
 <img width="350" height="1024" alt="image" src="https://github.com/user-attachments/assets/f0152406-ae6a-47fc-a831-62514749b682" />
 <br/>
-<img width="242" alt="lockexample" src="https://github.com/user-attachments/assets/b3e2af45-ee3a-43de-bd38-ddcd7650cdf2">
+
+<img width="304" height="600" alt="screenshot-hello" src="https://github.com/user-attachments/assets/eb8a6f30-c13b-407d-b7a6-ea0451a1a84c" />
 
 Simple little paint application for kids.
 [<img src="https://f-droid.org/badge/get-it-on.png"
