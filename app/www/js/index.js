@@ -145,6 +145,66 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
     }, { passive: false });
 
+    // ── Lock / screen pinning ─────────────────────────────────────────────────
+
+    var ScreenPinning = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.ScreenPinning;
+    var fabButton = document.getElementById('fabButton');
+    var lockButton = document.getElementById('lockButton');
+    var isLocked = false;
+    var tapCountLock = 0;
+    var lastTapLock = 0;
+
+    // Hide FAB entirely when running outside Capacitor (e.g. plain browser)
+    if (!ScreenPinning) {
+        document.querySelector('.fab-container').style.display = 'none';
+    }
+
+    fabButton.addEventListener('click', function () {
+        fabButton.classList.toggle('expanded');
+        lockButton.classList.toggle('expanded');
+    });
+
+    lockButton.addEventListener('click', function () {
+        if (!isLocked) {
+            ScreenPinning.enterPinnedMode()
+                .then(function () {
+                    isLocked = true;
+                    lockButton.textContent = 'Unlock app';
+                    showCustomToast('Tap 4 times quickly to unlock', 2000);
+                })
+                .catch(function (err) {
+                    console.error('enterPinnedMode failed', err);
+                });
+        } else {
+            var now = Date.now();
+            if (lastTapLock === 0 || now - lastTapLock >= 1000) {
+                tapCountLock = 1;
+                showCustomToast('Tap 3 more times quickly to unlock', 2000);
+            } else {
+                tapCountLock++;
+                if (tapCountLock >= 4) {
+                    ScreenPinning.exitPinnedMode()
+                        .then(function () {
+                            isLocked = false;
+                            tapCountLock = 0;
+                            lastTapLock = 0;
+                            lockButton.textContent = 'Lock app';
+                            showCustomToast('App unlocked', 2000);
+                        })
+                        .catch(function (err) {
+                            console.error('exitPinnedMode failed', err);
+                            showCustomToast('Error unlocking app', 2000);
+                        });
+                    return;
+                } else {
+                    var remaining = 4 - tapCountLock;
+                    showCustomToast('Tap ' + remaining + ' more time' + (remaining === 1 ? '' : 's') + ' quickly to unlock', 2000);
+                }
+            }
+            lastTapLock = now;
+        }
+    });
+
     // ── Clear canvas (3-tap confirmation) ────────────────────────────────────
 
     var clearButton = document.getElementById('clearButton');

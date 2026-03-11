@@ -136,6 +136,61 @@ button.utility:hover {
     background: #56A64C;
 }
 
+/* FAB container */
+.fab-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #68B25B;
+    color: #fff;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 0 0 #6A845F;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.sub-fab {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #68B25B;
+    color: #fff;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 0 0 #6A845F;
+    cursor: pointer;
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.fab.expanded + .sub-fab {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: all;
+}
+
 /* Responsive adjustments */
 @media only screen and (orientation: landscape) {
     .app-container {
