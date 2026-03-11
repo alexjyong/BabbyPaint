@@ -1,6 +1,7 @@
 # BabbyPaint
 
-<img width="242" alt="logo" src="https://github.com/user-attachments/assets/180a2ee3-9c03-4cf4-8b18-4b78cac6258d">
+<img width="350" height="1024" alt="image" src="https://github.com/user-attachments/assets/f0152406-ae6a-47fc-a831-62514749b682" />
+<br/>
 <img width="242" alt="lockexample" src="https://github.com/user-attachments/assets/b3e2af45-ee3a-43de-bd38-ddcd7650cdf2">
 
 Simple little paint application for kids.
@@ -57,3 +58,5 @@ I got the idea to do this when I was trying to find a simple paint applcation fo
 Lock button feature inspiried by [immersivelock.](https://github.com/babydots/immersivelock) by [Peter Serwylo](https://github.com/pserwylo).
 
 Credit to [Lachlan Dawson](https://codepen.io/Lachlandawson) for the base code in this project from [here](https://codepen.io/Lachlandawson/pen/abmdyV). 
+
+Credit to [Courtney Blazo](www.linkedin.com/in/courtney-b-12baa9182/) for the new logo for this app.
