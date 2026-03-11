@@ -17,7 +17,7 @@ It even includes a handy "lock" button, preventing any accidental taps or swipes
 
 No ads to distract your child, no in-app purchases, app doesn't steal your data, and is completely open-source and free!
 
-You can download an apk file in the [releases section](https://github.com/alexjyong/BabbyPaint/releases). Google Play and F-Droid support coming soon!
+You can download an apk file in the [releases section](https://github.com/alexjyong/BabbyPaint/releases).
 
 ### Build It Yourself
 
