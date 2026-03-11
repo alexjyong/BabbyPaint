@@ -54,6 +54,6 @@ Feel free to modify and play around with the source code to fit your needs! Whet
 
 I got the idea to do this when I was trying to find a simple paint applcation for my young daughter's tablet and couldn't find an app that did exactly what I wanted. So I figured I could make my own!
 
-Lock button feature inspiried by [immersivelock.](https://github.com/babydots/immersivelock) by [Peter Serwylo](https://github.com/pserwylo).
+Lock button feature inspired by [immersivelock.](https://github.com/babydots/immersivelock) by [Peter Serwylo](https://github.com/pserwylo).
 
 Credit to [Lachlan Dawson](https://codepen.io/Lachlandawson) for the base code in this project from [here](https://codepen.io/Lachlandawson/pen/abmdyV). 
