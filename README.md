@@ -30,7 +30,7 @@ If you're curious or want to make your own custom tweaks, you can build BabbyPai
 
 2. Clone the repository and enter the project folder:
     ```bash
-    git clone https://github.com/YOUR_USERNAME/babbypaint.git
+    git clone https://github.com/alexjyong/babbypaint.git
     cd babbypaint
     ```
 
