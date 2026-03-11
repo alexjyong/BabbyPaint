@@ -3,7 +3,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var canvas = document.getElementById('mainCanvas');
     var context = canvas.getContext('2d');
     var color = '#34495E'; // default: black swatch
+    var lineWidth = 5;
+    var isEraser = false;
     var mouseDown = false;
+    var undoStack = [];
+    var redoStack = [];
+    var MAX_UNDO = 20;
     var lastX = 0;
     var lastY = 0;
     var touchPositions = {}; // tracks last position per touch identifier
@@ -25,7 +30,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', function () {
+        resizeCanvas();
+        undoStack = [];
+        redoStack = [];
+        undoButton.disabled = true;
+        redoButton.disabled = true;
+    });
 
     // ── Toast ────────────────────────────────────────────────────────────────
 
@@ -49,9 +60,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }, duration);
     }
 
+    // ── Undo ─────────────────────────────────────────────────────────────────
+
+    function saveUndoState() {
+        undoStack.push(context.getImageData(0, 0, canvas.width, canvas.height));
+        if (undoStack.length > MAX_UNDO) undoStack.shift();
+        undoButton.disabled = false;
+        redoStack = [];
+        redoButton.disabled = true;
+    }
+
     // ── Color selection ──────────────────────────────────────────────────────
 
-    var colorList = document.querySelector('.controls ul');
+    var colorList = document.querySelector('ul.colors');
+    var eraserButton = document.getElementById('eraserButton');
+    var undoButton = document.getElementById('undoButton');
+    var redoButton = document.getElementById('redoButton');
     colorList.addEventListener('click', function (e) {
         var target = e.target;
         if (target.tagName !== 'LI') return;
@@ -59,6 +83,21 @@ document.addEventListener('DOMContentLoaded', function () {
         if (prev) prev.classList.remove('selected');
         target.classList.add('selected');
         color = getComputedStyle(target).backgroundColor;
+        // deactivate eraser when a colour is chosen
+        isEraser = false;
+        eraserButton.classList.remove('eraser-active');
+    });
+
+    // ── Brush size selection ──────────────────────────────────────────────────
+
+    var sizeList = document.querySelector('ul.sizes');
+    sizeList.addEventListener('click', function (e) {
+        var target = e.target.closest('li');
+        if (!target) return;
+        var prev = sizeList.querySelector('.selected');
+        if (prev) prev.classList.remove('selected');
+        target.classList.add('selected');
+        lineWidth = parseInt(target.dataset.size, 10);
     });
 
     // ── Drawing helpers ──────────────────────────────────────────────────────
@@ -67,10 +106,17 @@ document.addEventListener('DOMContentLoaded', function () {
         context.beginPath();
         context.moveTo(fromX, fromY);
         context.lineTo(toX, toY);
-        context.strokeStyle = color;
-        context.lineWidth = 5;
+        context.lineWidth = lineWidth;
         context.lineCap = 'round';
+        if (isEraser) {
+            context.globalCompositeOperation = 'destination-out';
+            context.strokeStyle = 'rgba(0,0,0,1)';
+        } else {
+            context.globalCompositeOperation = 'source-over';
+            context.strokeStyle = color;
+        }
         context.stroke();
+        context.globalCompositeOperation = 'source-over';
     }
 
     function getTouchCanvasPos(touch) {
@@ -85,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Mouse events ─────────────────────────────────────────────────────────
 
     canvas.addEventListener('mousedown', function (e) {
+        saveUndoState();
         mouseDown = true;
         lastX = e.offsetX;
         lastY = e.offsetY;
@@ -104,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     canvas.addEventListener('touchstart', function (e) {
         e.preventDefault();
+        saveUndoState();
         mouseDown = true;
         for (var i = 0; i < e.changedTouches.length; i++) {
             var touch = e.changedTouches[i];
@@ -149,19 +197,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var ScreenPinning = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.ScreenPinning;
     var fabButton = document.getElementById('fabButton');
+    var clearSubFab = document.getElementById('clearSubFab');
     var lockButton = document.getElementById('lockButton');
     var isLocked = false;
     var tapCountLock = 0;
     var lastTapLock = 0;
 
-    // Hide FAB entirely when running outside Capacitor (e.g. plain browser)
+    // Hide lock button when ScreenPinning is unavailable; clear FAB always shows
     if (!ScreenPinning) {
-        document.querySelector('.fab-container').style.display = 'none';
+        lockButton.style.display = 'none';
     }
 
     fabButton.addEventListener('click', function () {
         fabButton.classList.toggle('expanded');
-        lockButton.classList.toggle('expanded');
+        clearSubFab.classList.toggle('expanded');
+        if (ScreenPinning) lockButton.classList.toggle('expanded');
     });
 
     lockButton.addEventListener('click', function () {
@@ -205,36 +255,64 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ── Clear canvas (3-tap confirmation) ────────────────────────────────────
+    undoButton.addEventListener('click', function () {
+        if (undoStack.length === 0) return;
+        redoStack.push(context.getImageData(0, 0, canvas.width, canvas.height));
+        redoButton.disabled = false;
+        context.putImageData(undoStack.pop(), 0, 0);
+        undoButton.disabled = undoStack.length === 0;
+    });
 
-    var clearButton = document.getElementById('clearButton');
+    redoButton.addEventListener('click', function () {
+        if (redoStack.length === 0) return;
+        undoStack.push(context.getImageData(0, 0, canvas.width, canvas.height));
+        undoButton.disabled = false;
+        context.putImageData(redoStack.pop(), 0, 0);
+        redoButton.disabled = redoStack.length === 0;
+    });
+
+    // ── Eraser ────────────────────────────────────────────────────────────────
+
+    eraserButton.addEventListener('click', function () {
+        isEraser = !isEraser;
+        if (isEraser) {
+            eraserButton.classList.add('eraser-active');
+            var prev = colorList.querySelector('.selected');
+            if (prev) prev.classList.remove('selected');
+        } else {
+            eraserButton.classList.remove('eraser-active');
+        }
+    });
+
+    // ── Clear canvas (3-tap on FAB) ───────────────────────────────────────────
+
     var tapCountClear = 0;
     var lastTapClear = 0;
-    var resetClearTextTimeout;
+    var resetClearTimeout;
 
-    clearButton.addEventListener('click', function () {
-        clearTimeout(resetClearTextTimeout);
+    clearSubFab.addEventListener('click', function () {
+        clearTimeout(resetClearTimeout);
         var now = Date.now();
 
         if (lastTapClear === 0 || now - lastTapClear >= 1000) {
             tapCountClear = 1;
-            clearButton.textContent = 'Tap 2 more times quickly to clear';
+            showCustomToast('Tap 2 more times to clear', 900);
         } else {
             tapCountClear++;
             if (tapCountClear >= 3) {
+                saveUndoState();
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 tapCountClear = 0;
-                clearButton.textContent = 'Clear Canvas';
+                lastTapClear = 0;
+                return;
             } else {
                 var remaining = 3 - tapCountClear;
-                clearButton.textContent = 'Tap ' + remaining + ' more time' + (remaining === 1 ? '' : 's') + ' quickly to clear';
+                showCustomToast('Tap ' + remaining + ' more time' + (remaining === 1 ? '' : 's') + ' to clear', 900);
             }
         }
 
         lastTapClear = now;
-
-        resetClearTextTimeout = setTimeout(function () {
-            clearButton.textContent = 'Clear Canvas';
+        resetClearTimeout = setTimeout(function () {
             tapCountClear = 0;
             lastTapClear = 0;
         }, 1000);

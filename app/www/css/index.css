@@ -95,6 +95,111 @@ ul li:hover {
     transform: scale(1.1);
 }
 
+/* Brush size row — segmented control */
+ul.sizes {
+    background: #E0E0E0;
+    border-radius: 12px;
+    padding: 4px;
+    gap: 2px;
+}
+
+ul.sizes li {
+    background: transparent;
+    box-shadow: none;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 60px;
+    height: 60px;
+    padding: 6px 0;
+    transition: background 0.15s;
+}
+
+ul.sizes li.selected {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+}
+
+ul.sizes .size-bar {
+    display: block;
+    width: 40px;
+    background: #34495E;
+    border-radius: 99px;
+}
+
+ul.sizes li.size-sm .size-bar { height: 5px;  }
+ul.sizes li.size-md .size-bar { height: 14px; }
+ul.sizes li.size-lg .size-bar { height: 26px; }
+ul.sizes li.size-xl .size-bar { height: 40px; }
+
+ul.sizes .size-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #666;
+    line-height: 1;
+}
+
+/* Toolbar — eraser + undo + redo in one row */
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    margin: 6px 0;
+    padding-right: 76px;
+}
+
+.tool-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.tool-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #666;
+}
+
+button.eraser-btn {
+    width: 64px;
+    height: 36px;
+    background: #FFB3C6;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 3px 0 0 #E891A8;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+}
+
+/* darker band at the bottom, like a real eraser */
+button.eraser-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: #E891A8;
+}
+
+button.eraser-btn.eraser-active {
+    outline: 3px solid #68B25B;
+    outline-offset: 2px;
+}
+
 /* Colors */
 .red    { background: #E74C3C; }
 .blue   { background: #3498DB; }
@@ -136,6 +241,20 @@ button.utility:hover {
     background: #56A64C;
 }
 
+button.utility:disabled {
+    background: #B0C4AE;
+    box-shadow: 0 3px 0 0 #95A897;
+    cursor: default;
+}
+
+button.utility.history-btn {
+    width: 52px;
+    height: 36px;
+    font-size: 18px;
+    padding: 0;
+    margin: 0;
+}
+
 /* FAB container */
 .fab-container {
     position: fixed;
@@ -166,7 +285,6 @@ button.utility:hover {
 
 .sub-fab {
     position: fixed;
-    bottom: 80px;
     right: 20px;
     width: 48px;
     height: 48px;
@@ -185,7 +303,18 @@ button.utility:hover {
     transition: transform 0.3s, opacity 0.3s;
 }
 
-.fab.expanded + .sub-fab {
+#clearSubFab {
+    bottom: 80px;
+    background-color: #E74C3C;
+    box-shadow: 0 3px 0 0 #C0392B;
+    font-size: 20px;
+}
+
+#lockButton {
+    bottom: 140px;
+}
+
+.sub-fab.expanded {
     transform: scale(1);
     opacity: 1;
     pointer-events: all;
@@ -216,6 +345,23 @@ button.utility:hover {
         flex-direction: column;
         justify-content: center;
         height: 60%;
+    }
+
+    ul.sizes {
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        gap: 6px;
+        margin: 4px 0;
+    }
+
+    .tool-item {
+        flex-direction: row;
+        gap: 8px;
     }
 
     button.utility {

@@ -3,14 +3,6 @@ name: Build Android Version
 on:
   workflow_dispatch:
     inputs:
-      framework:
-        description: 'Build framework'
-        required: true
-        default: 'capacitor'
-        type: choice
-        options:
-          - capacitor
-          - cordova
       output_type:
         description: 'Output type'
         required: true
@@ -21,15 +13,11 @@ on:
           - aab
           - both
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CAPACITOR BUILD
-# ─────────────────────────────────────────────────────────────────────────────
 jobs:
 
-  capacitor-build:
+  build:
     name: Capacitor – ${{ inputs.output_type }}
     runs-on: ubuntu-latest
-    if: inputs.framework == 'capacitor'
 
     steps:
       - uses: actions/checkout@v4
@@ -93,7 +81,7 @@ jobs:
         if: inputs.output_type == 'apk' || inputs.output_type == 'both'
         uses: actions/upload-artifact@v4
         with:
-          name: capacitor-apk
+          name: babbypaint-apk
           if-no-files-found: error
           path: app/android/app/build/outputs/apk/release/babbypaint-release.apk
 
@@ -101,96 +89,6 @@ jobs:
         if: inputs.output_type == 'aab' || inputs.output_type == 'both'
         uses: actions/upload-artifact@v4
         with:
-          name: capacitor-aab
+          name: babbypaint-aab
           if-no-files-found: error
           path: app/android/app/build/outputs/bundle/release/babbypaint-release.aab
-
-# ─────────────────────────────────────────────────────────────────────────────
-# CORDOVA BUILD  (Docker)
-# ─────────────────────────────────────────────────────────────────────────────
-
-  cordova-build:
-    name: Cordova – ${{ inputs.output_type }}
-    runs-on: ubuntu-latest
-    if: inputs.framework == 'cordova'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Pull Docker image
-        run: docker pull ghcr.io/alexjyong/babbypaint:main
-
-      - name: Decode keystore
-        run: |
-          echo "${{ secrets.JKS_KEYSTORE_BASE64 }}" | base64 -d > src/upload-keystore.jks
-
-      - name: Build release APK
-        if: inputs.output_type == 'apk' || inputs.output_type == 'both'
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-        run: |
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged \
-            ghcr.io/alexjyong/babbypaint:main sh -c "
-              cd src &&
-              rm -rf platforms/android plugins &&
-              cordova platform add android --verbose &&
-              cordova plugin add cordova-custom-config &&
-              cordova plugin add cordova-plugin-screen-pinning --verbose &&
-              cordova build android --release -- \
-                --keystore=/workspace/src/upload-keystore.jks \
-                --storePassword=$KEYSTORE_PASSWORD \
-                --alias=uploadkey \
-                --password=$ALIAS_PASSWORD \
-                --packageType=apk &&
-              apksigner sign \
-                --ks /workspace/src/upload-keystore.jks \
-                --ks-key-alias uploadkey \
-                --ks-pass pass:$KEYSTORE_PASSWORD \
-                --key-pass pass:$ALIAS_PASSWORD \
-                /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk &&
-              apksigner verify --verbose \
-                /workspace/src/platforms/android/app/build/outputs/apk/release/app-release.apk
-            "
-
-      - name: Build release AAB
-        if: inputs.output_type == 'aab' || inputs.output_type == 'both'
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-        run: |
-          docker run --rm -i -v $PWD:/workspace -w /workspace --privileged \
-            ghcr.io/alexjyong/babbypaint:main sh -c "
-              cd src &&
-              rm -rf platforms/android plugins &&
-              cordova platform add android --verbose &&
-              cordova plugin add cordova-custom-config &&
-              cordova plugin add cordova-plugin-screen-pinning --verbose &&
-              cordova build android --release -- \
-                --keystore=/workspace/src/upload-keystore.jks \
-                --storePassword=$KEYSTORE_PASSWORD \
-                --alias=uploadkey \
-                --password=$ALIAS_PASSWORD \
-                --packageType=bundle &&
-              jarsigner -verbose \
-                -keystore /workspace/src/upload-keystore.jks \
-                -storepass $KEYSTORE_PASSWORD \
-                -keypass $ALIAS_PASSWORD \
-                /workspace/src/platforms/android/app/build/outputs/bundle/release/app-release.aab uploadkey
-            "
-
-      - name: Upload APK artifact
-        if: inputs.output_type == 'apk' || inputs.output_type == 'both'
-        uses: actions/upload-artifact@v4
-        with:
-          name: cordova-apk
-          if-no-files-found: error
-          path: src/platforms/android/app/build/outputs/apk/release/app-release.apk
-
-      - name: Upload AAB artifact
-        if: inputs.output_type == 'aab' || inputs.output_type == 'both'
-        uses: actions/upload-artifact@v4
-        with:
-          name: cordova-aab
-          if-no-files-found: error
-          path: src/platforms/android/app/build/outputs/bundle/release/app-release.aab
