@@ -1,0 +1,468 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#custom-toast-container {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.custom-toast {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    font-size: 14px;
+}
+
+.custom-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+body {
+    background: #F5F5F5;
+    font-family: sans-serif;
+    color: black;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+canvas {
+    background: #FFF;
+    border-radius: 5px;
+    box-shadow: 0 4px 0 0 #E0E0E0;
+    max-width: 90%;
+    max-height: 60%;
+    display: block;
+    margin: 0 auto;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    margin-top: 10px;
+}
+
+ul {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 10px 0;
+    list-style-type: none;
+}
+
+ul li {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    box-shadow: 0 3px 0 0 #E0E0E0;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+ul li:hover {
+    transform: scale(1.1);
+}
+
+/* Brush size row — segmented control */
+ul.sizes {
+    background: #E0E0E0;
+    border-radius: 12px;
+    padding: 4px;
+    gap: 2px;
+}
+
+ul.sizes li {
+    background: transparent;
+    box-shadow: none;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 60px;
+    height: 60px;
+    padding: 6px 0;
+    transition: background 0.15s;
+}
+
+ul.sizes li.selected {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+}
+
+ul.sizes .size-bar {
+    display: block;
+    width: 40px;
+    background: #34495E;
+    border-radius: 99px;
+}
+
+ul.sizes li.size-sm .size-bar { height: 5px;  }
+ul.sizes li.size-md .size-bar { height: 14px; }
+ul.sizes li.size-lg .size-bar { height: 26px; }
+ul.sizes li.size-xl .size-bar { height: 40px; }
+
+ul.sizes .size-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #666;
+    line-height: 1;
+}
+
+/* Toolbar — eraser + undo + redo in one row */
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    margin: 6px 0;
+    padding-right: 76px;
+}
+
+.tool-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.tool-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #666;
+}
+
+button.eraser-btn {
+    width: 64px;
+    height: 36px;
+    background: #FFB3C6;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 3px 0 0 #E891A8;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+}
+
+/* darker band at the bottom, like a real eraser */
+button.eraser-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: #E891A8;
+}
+
+button.eraser-btn.eraser-active {
+    outline: 3px solid #68B25B;
+    outline-offset: 2px;
+}
+
+/* Colors */
+.red    { background: #E74C3C; }
+.blue   { background: #3498DB; }
+.yellow { background: #F1C40F; }
+.green  { background: #68B25B; }
+.orange { background: #F39C12; }
+.purple { background: #8801e2; }
+.black  { background: #34495E; }
+.white  { background: #FFFFFF; }
+.grey   { background: #95A5A6; }
+
+.selected {
+    border: 7px solid #68B25B;
+    width: 40px;
+    height: 40px;
+}
+
+/* BUTTON STYLES */
+
+button.utility {
+    background: #68B25B;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 3px 0 0 #6A845F;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.2;
+    margin: 10px 0;
+    padding: 10px 15px;
+    width: auto;
+    max-width: 90%;
+    text-align: center;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+button.utility:hover {
+    background: #56A64C;
+}
+
+button.utility:disabled {
+    background: #B0C4AE;
+    box-shadow: 0 3px 0 0 #95A897;
+    cursor: default;
+}
+
+button.utility.history-btn {
+    width: 52px;
+    height: 36px;
+    font-size: 18px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Permission rationale modal */
+.rationale-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.rationale-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 300px;
+    margin: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.rationale-card h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #34495E;
+}
+
+.rationale-card p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.rationale-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+.rationale-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#rationaleCancel {
+    background: #E0E0E0;
+    color: #555;
+}
+
+#rationaleOk {
+    background: #68B25B;
+    color: #fff;
+}
+
+/* FAB container */
+.fab-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #68B25B;
+    color: #fff;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 0 0 #6A845F;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.sub-fab {
+    position: fixed;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #68B25B;
+    color: #fff;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 0 0 #6A845F;
+    cursor: pointer;
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+#saveSubFab {
+    bottom: 80px;
+    background-color: #3498DB;
+    box-shadow: 0 3px 0 0 #2980B9;
+    font-size: 20px;
+}
+
+#clearSubFab {
+    bottom: 140px;
+    background-color: #E74C3C;
+    box-shadow: 0 3px 0 0 #C0392B;
+    font-size: 20px;
+}
+
+#lockButton {
+    bottom: 200px;
+}
+
+.sub-fab.expanded {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Responsive adjustments */
+@media only screen and (orientation: landscape) {
+    .app-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+    }
+
+    canvas {
+        max-width: 65%;
+        max-height: 80%;
+    }
+
+    .controls {
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30%;
+        max-height: 80%;
+    }
+
+    ul {
+        flex-direction: column;
+        justify-content: center;
+        height: 60%;
+    }
+
+    ul.sizes {
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        gap: 6px;
+        margin: 4px 0;
+    }
+
+    .tool-item {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    button.utility {
+        width: 100%;
+        transform: rotate(90deg);
+        transform-origin: center;
+        line-height: 1.5;
+    }
+}
+
+@media only screen and (orientation: portrait) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    canvas {
+        max-width: 90%;
+        max-height: 60%;
+    }
+
+    .controls {
+        flex-direction: column;
+        justify-content: space-between;
+        width: 90%;
+        margin-top: 10px;
+    }
+
+    ul {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    button.utility {
+        width: 150px;
+        transform: rotate(0deg);
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "dev.alexjyong.babbypaint",
+  "displayName": "BabbyPaint",
+  "version": "0.1.0",
+  "description": "A simple paint app for kids",
+  "scripts": {
+    "build": "npx cap sync"
+  },
+  "keywords": [],
+  "author": "Alex Yong",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor-community/media": "^6.0.0",
+    "@capacitor/filesystem": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.0",
+    "@capacitor/cli": "^6.0.0"
+  }
+}

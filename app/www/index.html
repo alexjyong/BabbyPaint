@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <link rel="stylesheet" href="css/index.css" type="text/css" media="screen">
+    <title>Babby Paint!</title>
+</head>
+<body>
+    <div class="app-container">
+        <div id="custom-toast-container"></div>
+
+        <!-- Permission rationale shown before requesting photo access -->
+        <div id="permissionRationale" class="rationale-overlay" style="display:none">
+            <div class="rationale-card">
+                <h2>Save to Photos</h2>
+                <p>To save drawings, BabbyPaint needs access to your Photos.</p>
+                <p>We only <strong>add</strong> new drawings — we never read, change, or delete your existing photos.</p>
+                <div class="rationale-buttons">
+                    <button id="rationaleCancel">Cancel</button>
+                    <button id="rationaleOk">Allow</button>
+                </div>
+            </div>
+        </div>
+        <canvas id="mainCanvas"></canvas>
+        <div class="controls">
+            <ul class="colors">
+                <li class="red"></li>
+                <li class="blue"></li>
+                <li class="yellow"></li>
+                <li class="green"></li>
+                <li class="orange"></li>
+                <li class="purple"></li>
+                <li class="black selected"></li>
+                <li class="white"></li>
+                <li class="grey"></li>
+            </ul>
+            <ul class="sizes">
+                <li class="size-sm selected" data-size="5"><span class="size-bar"></span><span class="size-label">S</span></li>
+                <li class="size-md" data-size="15"><span class="size-bar"></span><span class="size-label">M</span></li>
+                <li class="size-lg" data-size="30"><span class="size-bar"></span><span class="size-label">L</span></li>
+                <li class="size-xl" data-size="60"><span class="size-bar"></span><span class="size-label">XL</span></li>
+            </ul>
+            <div class="toolbar">
+                <div class="tool-item">
+                    <button class="eraser-btn" id="eraserButton" aria-label="Eraser"></button>
+                    <span class="tool-label">Erase</span>
+                </div>
+                <div class="tool-item">
+                    <button class="utility history-btn" id="undoButton" disabled>↩</button>
+                    <span class="tool-label">Undo</span>
+                </div>
+                <div class="tool-item">
+                    <button class="utility history-btn" id="redoButton" disabled>↪</button>
+                    <span class="tool-label">Redo</span>
+                </div>
+            </div>
+        </div>
+        <!-- Floating Action Button (FAB) -->
+        <div class="fab-container">
+            <button class="fab main-fab" id="fabButton">+</button>
+            <button class="fab sub-fab" id="saveSubFab" aria-label="Save drawing">💾</button>
+            <button class="fab sub-fab" id="clearSubFab" aria-label="Clear canvas">🗑️</button>
+            <button class="fab sub-fab" id="lockButton">Lock app</button>
+        </div>
+    </div>
+    <script src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# Keystores - never commit signing keys
+*.jks
+*.keystore
+*.b64
+
+# macOS
+.DS_Store
+
+# Zip archives (source assets are in AppIcons/)
+*.zip
