@@ -197,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var ScreenPinning = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.ScreenPinning;
     var fabButton = document.getElementById('fabButton');
+    var saveSubFab = document.getElementById('saveSubFab');
     var clearSubFab = document.getElementById('clearSubFab');
     var lockButton = document.getElementById('lockButton');
     var isLocked = false;
@@ -210,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     fabButton.addEventListener('click', function () {
         fabButton.classList.toggle('expanded');
+        saveSubFab.classList.toggle('expanded');
         clearSubFab.classList.toggle('expanded');
         if (ScreenPinning) lockButton.classList.toggle('expanded');
     });
@@ -315,6 +317,137 @@ document.addEventListener('DOMContentLoaded', function () {
         resetClearTimeout = setTimeout(function () {
             tapCountClear = 0;
             lastTapClear = 0;
+        }, 1000);
+    });
+
+    // ── Save canvas (3-tap on FAB) ────────────────────────────────────────────
+
+    var tapCountSave = 0;
+    var lastTapSave = 0;
+    var resetSaveTimeout;
+
+    var rationaleModal = document.getElementById('permissionRationale');
+
+    function showRationale(onOk) {
+        rationaleModal.style.display = 'flex';
+        document.getElementById('rationaleOk').onclick = function () {
+            rationaleModal.style.display = 'none';
+            onOk();
+        };
+        document.getElementById('rationaleCancel').onclick = function () {
+            rationaleModal.style.display = 'none';
+        };
+    }
+
+    function performSave(Filesystem, Media) {
+        // Composite onto white so erased areas don't appear transparent
+        var tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        var tempCtx = tempCanvas.getContext('2d');
+        tempCtx.fillStyle = '#FFFFFF';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        tempCtx.drawImage(canvas, 0, 0);
+
+        tempCanvas.toBlob(function (blob) {
+            var filename = 'drawing-' + Date.now() + '.png';
+            var reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = function () {
+                var base64Data = reader.result.split(',')[1];
+                Filesystem.writeFile({
+                    path: filename,
+                    data: base64Data,
+                    directory: 'CACHE'
+                }).then(function (result) {
+                    return Media.savePhoto({ path: result.uri });
+                }).then(function () {
+                    showCustomToast('Saved to Photos!', 2000);
+                }).catch(function (err) {
+                    console.error('Save failed', err);
+                    showCustomToast('Could not save image', 2000);
+                });
+            };
+        }, 'image/png');
+    }
+
+    function browserDownload() {
+        var tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        var tempCtx = tempCanvas.getContext('2d');
+        tempCtx.fillStyle = '#FFFFFF';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        tempCtx.drawImage(canvas, 0, 0);
+        tempCanvas.toBlob(function (blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'drawing-' + Date.now() + '.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 'image/png');
+    }
+
+    function doSave() {
+        var Filesystem = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem;
+        var Media = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Media;
+
+        if (!Filesystem || !Media) {
+            browserDownload();
+            return;
+        }
+
+        Media.checkPermissions().then(function (status) {
+            var granted = status.publicStorage === 'granted' || status.publicStorage13Plus === 'granted';
+            var denied  = status.publicStorage === 'denied'  || status.publicStorage13Plus === 'denied';
+
+            if (granted) {
+                performSave(Filesystem, Media);
+            } else if (denied) {
+                showCustomToast('Photo access denied. Enable it in Settings → Apps → BabbyPaint → Permissions.', 4000);
+            } else {
+                // First time — show our explanation before the OS dialog
+                showRationale(function () {
+                    Media.requestPermissions().then(function (result) {
+                        var nowGranted = result.publicStorage === 'granted' || result.publicStorage13Plus === 'granted';
+                        if (nowGranted) {
+                            performSave(Filesystem, Media);
+                        } else {
+                            showCustomToast('Photo access is needed to save drawings.', 2500);
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    saveSubFab.addEventListener('click', function () {
+        clearTimeout(resetSaveTimeout);
+        var now = Date.now();
+
+        if (lastTapSave === 0 || now - lastTapSave >= 1000) {
+            tapCountSave = 1;
+            showCustomToast('Tap 2 more times to save', 900);
+        } else {
+            tapCountSave++;
+            if (tapCountSave >= 3) {
+                tapCountSave = 0;
+                lastTapSave = 0;
+                doSave();
+                return;
+            } else {
+                var remaining = 3 - tapCountSave;
+                showCustomToast('Tap ' + remaining + ' more time' + (remaining === 1 ? '' : 's') + ' to save', 900);
+            }
+        }
+
+        lastTapSave = now;
+        resetSaveTimeout = setTimeout(function () {
+            tapCountSave = 0;
+            lastTapSave = 0;
         }, 1000);
     });
 

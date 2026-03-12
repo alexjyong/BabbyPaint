@@ -1,0 +1,10 @@
+  Version 0.1.0 release!
+
+  BabbyPaint has been rebuilt from the ground up for a smoother, more reliable experience.
+
+  * Brush sizes, choose from 4 sizes (S, M, L, XL)
+  * Brand new logo! Created by the talented Courtney Blazo. Check her out at https://www.linkedin.com/in/courtney-b-12baa9182/
+  * Eraser, erase mistakes without clearing the whole canvas
+  * Undo & redo, made a mistake? No problem
+  * Save to Photos, save your child's artwork directly to your gallery
+  * Multitouch fixed, painting with multiple fingers no longer makes unwanted lines

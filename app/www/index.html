@@ -12,6 +12,19 @@
 <body>
     <div class="app-container">
         <div id="custom-toast-container"></div>
+
+        <!-- Permission rationale shown before requesting photo access -->
+        <div id="permissionRationale" class="rationale-overlay" style="display:none">
+            <div class="rationale-card">
+                <h2>Save to Photos</h2>
+                <p>To save drawings, BabbyPaint needs access to your Photos.</p>
+                <p>We only <strong>add</strong> new drawings — we never read, change, or delete your existing photos.</p>
+                <div class="rationale-buttons">
+                    <button id="rationaleCancel">Cancel</button>
+                    <button id="rationaleOk">Allow</button>
+                </div>
+            </div>
+        </div>
         <canvas id="mainCanvas"></canvas>
         <div class="controls">
             <ul class="colors">
@@ -49,6 +62,7 @@
         <!-- Floating Action Button (FAB) -->
         <div class="fab-container">
             <button class="fab main-fab" id="fabButton">+</button>
+            <button class="fab sub-fab" id="saveSubFab" aria-label="Save drawing">💾</button>
             <button class="fab sub-fab" id="clearSubFab" aria-label="Clear canvas">🗑️</button>
             <button class="fab sub-fab" id="lockButton">Lock app</button>
         </div>

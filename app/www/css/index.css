@@ -255,6 +255,66 @@ button.utility.history-btn {
     margin: 0;
 }
 
+/* Permission rationale modal */
+.rationale-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.rationale-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 300px;
+    margin: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.rationale-card h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #34495E;
+}
+
+.rationale-card p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.rationale-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+.rationale-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#rationaleCancel {
+    background: #E0E0E0;
+    color: #555;
+}
+
+#rationaleOk {
+    background: #68B25B;
+    color: #fff;
+}
+
 /* FAB container */
 .fab-container {
     position: fixed;
@@ -303,15 +363,22 @@ button.utility.history-btn {
     transition: transform 0.3s, opacity 0.3s;
 }
 
-#clearSubFab {
+#saveSubFab {
     bottom: 80px;
+    background-color: #3498DB;
+    box-shadow: 0 3px 0 0 #2980B9;
+    font-size: 20px;
+}
+
+#clearSubFab {
+    bottom: 140px;
     background-color: #E74C3C;
     box-shadow: 0 3px 0 0 #C0392B;
     font-size: 20px;
 }
 
 #lockButton {
-    bottom: 140px;
+    bottom: 200px;
 }
 
 .sub-fab.expanded {
