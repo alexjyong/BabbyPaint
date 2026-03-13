@@ -22,9 +22,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    baselineProfile {
-        automaticGenerationDuringBuild = false
-    }
 }
 
 repositories {
