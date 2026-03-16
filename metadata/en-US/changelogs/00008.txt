@@ -1,0 +1,4 @@
+Version 0.1.1
+
+* Updated artwork and feature graphic
+* Build and F-Droid compatibility fixes
