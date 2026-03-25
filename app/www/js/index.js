@@ -199,6 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var fabButton = document.getElementById('fabButton');
     var saveSubFab = document.getElementById('saveSubFab');
     var clearSubFab = document.getElementById('clearSubFab');
+    var helpSubFab = document.getElementById('helpSubFab');
     var lockButton = document.getElementById('lockButton');
     var isLocked = false;
     var tapCountLock = 0;
@@ -213,7 +214,20 @@ document.addEventListener('DOMContentLoaded', function () {
         fabButton.classList.toggle('expanded');
         saveSubFab.classList.toggle('expanded');
         clearSubFab.classList.toggle('expanded');
+        if (!isLocked) helpSubFab.classList.toggle('expanded');
         if (ScreenPinning) lockButton.classList.toggle('expanded');
+    });
+
+    // ── Help modal ────────────────────────────────────────────────────────────
+
+    var helpModal = document.getElementById('helpModal');
+
+    helpSubFab.addEventListener('click', function () {
+        helpModal.style.display = 'flex';
+    });
+
+    document.getElementById('helpClose').addEventListener('click', function () {
+        helpModal.style.display = 'none';
     });
 
     lockButton.addEventListener('click', function () {
@@ -222,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(function () {
                     isLocked = true;
                     lockButton.textContent = 'Unlock app';
+                    helpSubFab.classList.remove('expanded');
                     showCustomToast('Tap 4 times quickly to unlock', 2000);
                 })
                 .catch(function (err) {

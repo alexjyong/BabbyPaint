@@ -59,11 +59,41 @@
                 </div>
             </div>
         </div>
+        <!-- Help modal -->
+        <div id="helpModal" class="rationale-overlay" style="display:none">
+            <div class="help-card">
+                <h2>BabbyPaint</h2>
+                <div class="help-content">
+                    <h3>How to use</h3>
+                    <ul class="help-list">
+                        <li>Pick a color from the dots</li>
+                        <li>Pick a brush size — S is tiny, XL is chunky</li>
+                        <li>Tap the pink eraser to erase</li>
+                        <li>↩ / ↪ to undo and redo strokes</li>
+                        <li>Tap + to open the menu</li>
+                        <li>💾 saves to Photos (tap 3 times)</li>
+                        <li>🗑️ clears the canvas (tap 3 times — so the kid doesn't wipe it by accident)</li>
+                        <li>Lock app hands the screen to the kid so they can't get out</li>
+                    </ul>
+                    <h3>About</h3>
+                    <p>BabbyPaint is free and open source (GPL-3.0).</p>
+                    <p><a href="https://github.com/alexjyong/BabbyPaint" target="_blank">GitHub</a></p>
+                    <p>Logo by <a href="https://www.linkedin.com/in/courtney-b-12baa9182/" target="_blank">Courtney Blazo</a></p>
+                    <h3>Support my work!</h3>
+                    <p>If you have enjoyed this app, consider supporting me!</p>
+                    <p><a href="https://github.com/sponsors/alexjyong" target="_blank">GitHub Sponsors</a> · <a href="https://liberapay.com/alexjyong" target="_blank">Liberapay</a> · <a href="https://buymeacoffee.com/alexjyong" target="_blank">Buy Me a Coffee</a></p>
+                    <p><a href="https://paypal.me/alexjyong" target="_blank">PayPal</a> · <a href="https://cash.app/$ajyong" target="_blank">Cash App</a> · <a href="https://account.venmo.com/u/ajyong" target="_blank">Venmo</a></p>
+                </div>
+                <button id="helpClose">Close</button>
+            </div>
+        </div>
+
         <!-- Floating Action Button (FAB) -->
         <div class="fab-container">
             <button class="fab main-fab" id="fabButton">+</button>
             <button class="fab sub-fab" id="saveSubFab" aria-label="Save drawing">💾</button>
             <button class="fab sub-fab" id="clearSubFab" aria-label="Clear canvas">🗑️</button>
+            <button class="fab sub-fab" id="helpSubFab" aria-label="Help">?</button>
             <button class="fab sub-fab" id="lockButton">Lock app</button>
         </div>
     </div>

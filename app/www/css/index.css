@@ -315,6 +315,96 @@ button.utility.history-btn {
     color: #fff;
 }
 
+/* Help modal */
+.help-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 320px;
+    width: 90%;
+    margin: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+}
+
+.help-card h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #34495E;
+    margin-bottom: 12px;
+}
+
+.help-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #34495E;
+    margin: 14px 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.help-content {
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 4px;
+}
+
+.help-content p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+.help-content a {
+    color: #68B25B;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.help-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.help-list li {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+    padding-left: 16px;
+    position: relative;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.help-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #68B25B;
+    font-weight: 700;
+}
+
+#helpClose {
+    margin-top: 18px;
+    padding: 10px 20px;
+    background: #68B25B;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
 /* FAB container */
 .fab-container {
     position: fixed;
@@ -377,8 +467,16 @@ button.utility.history-btn {
     font-size: 20px;
 }
 
-#lockButton {
+#helpSubFab {
     bottom: 200px;
+    background-color: #8801e2;
+    box-shadow: 0 3px 0 0 #6600b0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+#lockButton {
+    bottom: 260px;
 }
 
 .sub-fab.expanded {
