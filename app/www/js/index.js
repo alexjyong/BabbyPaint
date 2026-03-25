@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener('touchmove', function (e) {
+        if (e.target.closest('.help-content')) return;
         e.preventDefault();
     }, { passive: false });
 
@@ -202,6 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var helpSubFab = document.getElementById('helpSubFab');
     var lockButton = document.getElementById('lockButton');
     var isLocked = false;
+    var fabOpen = false;
     var tapCountLock = 0;
     var lastTapLock = 0;
 
@@ -210,12 +212,17 @@ document.addEventListener('DOMContentLoaded', function () {
         lockButton.style.display = 'none';
     }
 
+    function setFabState(open) {
+        fabOpen = open;
+        fabButton.classList.toggle('expanded', open);
+        saveSubFab.classList.toggle('expanded', open);
+        clearSubFab.classList.toggle('expanded', open);
+        helpSubFab.classList.toggle('expanded', open && !isLocked);
+        if (ScreenPinning) lockButton.classList.toggle('expanded', open);
+    }
+
     fabButton.addEventListener('click', function () {
-        fabButton.classList.toggle('expanded');
-        saveSubFab.classList.toggle('expanded');
-        clearSubFab.classList.toggle('expanded');
-        if (!isLocked) helpSubFab.classList.toggle('expanded');
-        if (ScreenPinning) lockButton.classList.toggle('expanded');
+        setFabState(!fabOpen);
     });
 
     // ── Help modal ────────────────────────────────────────────────────────────
@@ -238,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     lockButton.textContent = 'Unlock app';
                     helpSubFab.classList.remove('expanded');
                     showCustomToast('Tap 4 times quickly to unlock', 2000);
+                    setFabState(fabOpen); // recompute sub-fab visibility with new lock state
                 })
                 .catch(function (err) {
                     console.error('enterPinnedMode failed', err);
@@ -257,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             lastTapLock = 0;
                             lockButton.textContent = 'Lock app';
                             showCustomToast('App unlocked', 2000);
+                            setFabState(fabOpen); // recompute sub-fab visibility with new lock state
                         })
                         .catch(function (err) {
                             console.error('exitPinnedMode failed', err);
