@@ -28,7 +28,6 @@ jobs:
           echo ${{ secrets.KEYSTORE_PASSWORD }} >> blah.txt
           echo ${{ secrets.ALIAS_PASSWORD }} >> blah.txt
       shell: bash
-      env:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v7
       with:
