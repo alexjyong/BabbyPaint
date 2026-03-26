@@ -1,14 +1,20 @@
 # BabbyPaint
 
-<img width="350" height="1024" alt="image" src="https://github.com/user-attachments/assets/f0152406-ae6a-47fc-a831-62514749b682" />
-<br/>
-
-<img width="304" height="600" alt="screenshot-hello" src="https://github.com/user-attachments/assets/eb8a6f30-c13b-407d-b7a6-ea0451a1a84c" />
+[![App-Code Size](https://img.shields.io/github/languages/code-size/alexjyong/babbypaint.svg)](https://api.github.com/repos/alexjyong/BabbyPaint)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/alexjyong/BabbyPaint)](https://github.com/alexjyong/BabbyPaint/pulse/monthly)
 
 Simple little paint application for kids.
+</br>
+
 [<img src="https://f-droid.org/badge/get-it-on.png"
     alt="Get it on F-Droid"
     height="80">](https://f-droid.org/en/packages/dev.alexjyong.babbypaint/)
+[<img src="https://github.com/user-attachments/assets/b0218883-f6dd-4f9e-abc1-ed070c6107f2"
+alt="Get it on GitHub"
+height="80">](https://github.com/alexjyong/BabbyPaint/releases/latest/)
+
+<img width="350" height="600" alt="image" src="https://github.com/user-attachments/assets/f0152406-ae6a-47fc-a831-62514749b682" />
+
 ---
 
 ## Features
@@ -22,6 +28,7 @@ No ads to distract your child, no in-app purchases, app doesn't steal your data,
 You can download an apk file in the [releases section](https://github.com/alexjyong/BabbyPaint/releases).
 
 You can also get the latest version in [F-Droid](https://f-droid.org/en/packages/dev.alexjyong.babbypaint/).
+<img width="304" height="600" alt="screenshot-hello" src="https://github.com/user-attachments/assets/eb8a6f30-c13b-407d-b7a6-ea0451a1a84c" />
 
 ### Build It Yourself
 
