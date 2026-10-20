@@ -240,6 +240,9 @@ document.addEventListener('DOMContentLoaded', function () {
         setFabState(!fabOpen);
     });
 
+    // Start open so parents can see the colours and brush sizes
+    setFabState(true);
+
     // ── Help modal ────────────────────────────────────────────────────────────
 
     var helpModal = document.getElementById('helpModal');
