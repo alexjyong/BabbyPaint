@@ -70,10 +70,10 @@
                         <li>Pick a brush size; S is tiny, XL is chunky</li>
                         <li>Tap the pink eraser to erase</li>
                         <li>↩ / ↪ to undo and redo strokes</li>
-                        <li>Tap + to open the menu</li>
+                        <li>Tap ☰ to open and close the menu</li>
                         <li>💾 saves to Photos (tap 3 times)</li>
                         <li>🗑️ clears the canvas (tap 3 times so your child won't clear on an accidental tap)</li>
-                        <li>Lock app pins the screen so your kiddo won't get into the rest of your phone. Tap the button 4 times quickly to unlock. </li>
+                        <li>🔒 pins the screen so your kiddo won't get into the rest of your phone. Tap the button 4 times quickly to unlock. </li>
                     <h3>About</h3>
                     <p>BabbyPaint is free and open source (GPL-3.0).</p>
                     <p><a href="https://github.com/alexjyong/BabbyPaint" target="_blank">Source code available on Github</a></p>
@@ -89,11 +89,11 @@
 
         <!-- Floating Action Button (FAB) -->
         <div class="fab-container">
-            <button class="fab main-fab" id="fabButton">+</button>
+            <button class="fab main-fab" id="fabButton" aria-label="Menu">☰</button>
             <button class="fab sub-fab" id="saveSubFab" aria-label="Save drawing">💾</button>
             <button class="fab sub-fab" id="clearSubFab" aria-label="Clear canvas">🗑️</button>
             <button class="fab sub-fab" id="helpSubFab" aria-label="Help">?</button>
-            <button class="fab sub-fab" id="lockButton">Lock app</button>
+            <button class="fab sub-fab" id="lockButton" aria-label="Lock app">🔒</button>
         </div>
     </div>
     <script src="js/index.js"></script>

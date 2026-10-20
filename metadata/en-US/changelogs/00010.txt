@@ -1,0 +1,7 @@
+Version 0.2.0
+
+* Full-screen canvas with a menu you can open and close with the ☰ button
+* Rotating the phone no longer clears your drawing
+* Fixed saving to Photos on newer Android versions
+* Fixed the app thinking it was locked when the lock prompt was cancelled
+* Lock button is now a 🔒 icon

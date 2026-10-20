@@ -15,28 +15,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Canvas resize ────────────────────────────────────────────────────────
 
-    function resizeCanvas() {
-        var dpr = window.devicePixelRatio || 1;
-        var width = window.innerWidth * 0.9;
-        var height = window.innerHeight * 0.8;
+    // The canvas is a fixed portrait "sheet of paper" stuck to the phone: when the
+    // screen rotates, the sheet is rotated back so it keeps covering the screen.
+    var paperWidth = Math.min(window.innerWidth, window.innerHeight);
+    var paperHeight = Math.max(window.innerWidth, window.innerHeight);
+    var dpr = window.devicePixelRatio || 1;
 
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-
-        context.setTransform(1, 0, 0, 1, 0, 0);
-        context.scale(dpr, dpr);
+    function screenAngle() {
+        return (window.screen.orientation && window.screen.orientation.angle) || 0;
     }
 
-    resizeCanvas();
-    window.addEventListener('resize', function () {
-        resizeCanvas();
-        undoStack = [];
-        redoStack = [];
-        undoButton.disabled = true;
-        redoButton.disabled = true;
-    });
+    canvas.style.position = 'fixed';
+    canvas.style.width = paperWidth + 'px';
+    canvas.style.height = paperHeight + 'px';
+    canvas.width = paperWidth * dpr;
+    canvas.height = paperHeight * dpr;
+    context.scale(dpr, dpr);
+
+    function layoutCanvas() {
+        canvas.style.left = (window.innerWidth - paperWidth) / 2 + 'px';
+        canvas.style.top = (window.innerHeight - paperHeight) / 2 + 'px';
+        canvas.style.transform = 'rotate(' + -screenAngle() + 'deg)';
+    }
+
+    layoutCanvas();
+    window.addEventListener('resize', layoutCanvas);
+    if (window.screen.orientation) window.screen.orientation.addEventListener('change', layoutCanvas);
 
     // ── Toast ────────────────────────────────────────────────────────────────
 
@@ -120,11 +124,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getTouchCanvasPos(touch) {
+        // The bounding box of the rotated canvas shares its centre; undo the rotation around it
         var rect = canvas.getBoundingClientRect();
-        var dpr = window.devicePixelRatio || 1;
+        var dx = touch.clientX - (rect.left + rect.width / 2);
+        var dy = touch.clientY - (rect.top + rect.height / 2);
+        var angle = screenAngle() * Math.PI / 180;
         return {
-            x: (touch.clientX - rect.left) * (canvas.width / rect.width) / dpr,
-            y: (touch.clientY - rect.top) * (canvas.height / rect.height) / dpr,
+            x: dx * Math.cos(angle) - dy * Math.sin(angle) + paperWidth / 2,
+            y: dx * Math.sin(angle) + dy * Math.cos(angle) + paperHeight / 2,
         };
     }
 
@@ -215,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setFabState(open) {
         fabOpen = open;
         fabButton.classList.toggle('expanded', open);
+        document.querySelector('.controls').classList.toggle('open', open);
         saveSubFab.classList.toggle('expanded', open);
         clearSubFab.classList.toggle('expanded', open);
         helpSubFab.classList.toggle('expanded', open && !isLocked);
@@ -224,6 +232,9 @@ document.addEventListener('DOMContentLoaded', function () {
     fabButton.addEventListener('click', function () {
         setFabState(!fabOpen);
     });
+
+    // Start open so parents can see the colours and brush sizes
+    setFabState(true);
 
     // ── Help modal ────────────────────────────────────────────────────────────
 
@@ -240,9 +251,11 @@ document.addEventListener('DOMContentLoaded', function () {
     lockButton.addEventListener('click', function () {
         if (!isLocked) {
             ScreenPinning.enterPinnedMode()
-                .then(function () {
+                .then(function (result) {
+                    // The user can cancel the system pinning dialog
+                    if (!result.pinned) return;
                     isLocked = true;
-                    lockButton.textContent = 'Unlock app';
+                    lockButton.textContent = '🔓';
                     helpSubFab.classList.remove('expanded');
                     showCustomToast('Tap 4 times quickly to unlock', 2000);
                     setFabState(fabOpen); // recompute sub-fab visibility with new lock state
@@ -263,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             isLocked = false;
                             tapCountLock = 0;
                             lastTapLock = 0;
-                            lockButton.textContent = 'Lock app';
+                            lockButton.textContent = '🔒';
                             showCustomToast('App unlocked', 2000);
                             setFabState(fabOpen); // recompute sub-fab visibility with new lock state
                         })
@@ -424,9 +437,13 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Only one alias applies per Android version; the other always reads 'denied'
+        var androidVersion = Number((navigator.userAgent.match(/Android (\d+)/) || [])[1]);
+        var alias = androidVersion >= 13 ? 'publicStorage13Plus' : 'publicStorage';
+
         Media.checkPermissions().then(function (status) {
-            var granted = status.publicStorage === 'granted' || status.publicStorage13Plus === 'granted';
-            var denied  = status.publicStorage === 'denied'  || status.publicStorage13Plus === 'denied';
+            var granted = status[alias] === 'granted';
+            var denied  = status[alias] === 'denied';
 
             if (granted) {
                 performSave(Filesystem, Media);
@@ -436,8 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // First time — show our explanation before the OS dialog
                 showRationale(function () {
                     Media.requestPermissions().then(function (result) {
-                        var nowGranted = result.publicStorage === 'granted' || result.publicStorage13Plus === 'granted';
-                        if (nowGranted) {
+                        if (result[alias] === 'granted') {
                             performSave(Filesystem, Media);
                         } else {
                             showCustomToast('Photo access is needed to save drawings.', 2500);
@@ -445,6 +461,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 });
             }
+        }).catch(function (err) {
+            console.error('Permission check failed', err);
+            showCustomToast('Could not save image', 2000);
         });
     }
 
