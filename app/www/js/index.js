@@ -15,10 +15,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Canvas resize ────────────────────────────────────────────────────────
 
+    // The canvas only ever grows, so rotating the phone keeps the whole drawing.
+    var cssWidth = 0;
+    var cssHeight = 0;
+
     function resizeCanvas() {
         var dpr = window.devicePixelRatio || 1;
-        var width = window.innerWidth * 0.9;
-        var height = window.innerHeight * 0.8;
+        var width = Math.max(cssWidth, window.innerWidth);
+        var height = Math.max(cssHeight, window.innerHeight);
+        if (width === cssWidth && height === cssHeight) return false;
+        cssWidth = width;
+        cssHeight = height;
+
+        var snapshot = document.createElement('canvas');
+        snapshot.width = canvas.width;
+        snapshot.height = canvas.height;
+        snapshot.getContext('2d').drawImage(canvas, 0, 0);
 
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
@@ -26,12 +38,14 @@ document.addEventListener('DOMContentLoaded', function () {
         canvas.height = height * dpr;
 
         context.setTransform(1, 0, 0, 1, 0, 0);
+        context.drawImage(snapshot, 0, 0);
         context.scale(dpr, dpr);
+        return true;
     }
 
     resizeCanvas();
     window.addEventListener('resize', function () {
-        resizeCanvas();
+        if (!resizeCanvas()) return;
         undoStack = [];
         redoStack = [];
         undoButton.disabled = true;
@@ -215,6 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setFabState(open) {
         fabOpen = open;
         fabButton.classList.toggle('expanded', open);
+        document.querySelector('.controls').classList.toggle('open', open);
         saveSubFab.classList.toggle('expanded', open);
         clearSubFab.classList.toggle('expanded', open);
         helpSubFab.classList.toggle('expanded', open && !isLocked);
@@ -240,7 +255,9 @@ document.addEventListener('DOMContentLoaded', function () {
     lockButton.addEventListener('click', function () {
         if (!isLocked) {
             ScreenPinning.enterPinnedMode()
-                .then(function () {
+                .then(function (result) {
+                    // The user can cancel the system pinning dialog
+                    if (!result.pinned) return;
                     isLocked = true;
                     lockButton.textContent = 'Unlock app';
                     helpSubFab.classList.remove('expanded');
@@ -424,9 +441,13 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Only one alias applies per Android version; the other always reads 'denied'
+        var androidVersion = Number((navigator.userAgent.match(/Android (\d+)/) || [])[1]);
+        var alias = androidVersion >= 13 ? 'publicStorage13Plus' : 'publicStorage';
+
         Media.checkPermissions().then(function (status) {
-            var granted = status.publicStorage === 'granted' || status.publicStorage13Plus === 'granted';
-            var denied  = status.publicStorage === 'denied'  || status.publicStorage13Plus === 'denied';
+            var granted = status[alias] === 'granted';
+            var denied  = status[alias] === 'denied';
 
             if (granted) {
                 performSave(Filesystem, Media);
@@ -436,8 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // First time — show our explanation before the OS dialog
                 showRationale(function () {
                     Media.requestPermissions().then(function (result) {
-                        var nowGranted = result.publicStorage === 'granted' || result.publicStorage13Plus === 'granted';
-                        if (nowGranted) {
+                        if (result[alias] === 'granted') {
                             performSave(Filesystem, Media);
                         } else {
                             showCustomToast('Photo access is needed to save drawings.', 2500);
@@ -445,6 +465,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 });
             }
+        }).catch(function (err) {
+            console.error('Permission check failed', err);
+            showCustomToast('Could not save image', 2000);
         });
     }
 

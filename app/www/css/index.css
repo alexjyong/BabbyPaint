@@ -41,9 +41,6 @@ body {
     color: black;
     height: 100vh;
     width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow: hidden;
 }
 
@@ -57,34 +54,46 @@ body {
 }
 
 canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
     background: #FFF;
-    border-radius: 5px;
-    box-shadow: 0 4px 0 0 #E0E0E0;
-    max-width: 90%;
-    max-height: 60%;
     display: block;
-    margin: 0 auto;
 }
 
+/* Menu panel: hidden until the hamburger button is tapped */
 .controls {
-    display: flex;
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     flex-direction: column;
     align-items: center;
-    width: 90%;
-    margin-top: 10px;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding: 4px 84px 8px 8px;
+    background: #fff;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+}
+
+.controls.open {
+    display: flex;
 }
 
 ul {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    padding: 10px 0;
+    max-width: 480px;
+    padding: 6px 0;
     list-style-type: none;
 }
 
 ul li {
-    height: 50px;
-    width: 50px;
+    height: 36px;
+    width: 36px;
     border-radius: 50%;
     box-shadow: 0 3px 0 0 #E0E0E0;
     cursor: pointer;
@@ -112,8 +121,8 @@ ul.sizes li {
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     padding: 6px 0;
     transition: background 0.15s;
 }
@@ -122,8 +131,8 @@ ul.sizes li.selected {
     background: #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.18);
     border: none;
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     border-radius: 8px;
 }
 
@@ -154,8 +163,7 @@ ul.sizes .size-label {
     align-items: flex-start;
     gap: 8px;
     width: 100%;
-    margin: 6px 0;
-    padding-right: 76px;
+    margin: 2px 0;
 }
 
 .tool-item {
@@ -212,9 +220,7 @@ button.eraser-btn.eraser-active {
 .grey   { background: #95A5A6; }
 
 .selected {
-    border: 7px solid #68B25B;
-    width: 40px;
-    height: 40px;
+    border: 5px solid #68B25B;
 }
 
 /* BUTTON STYLES */
@@ -453,6 +459,7 @@ button.utility.history-btn {
     align-items: center;
     box-shadow: 0 3px 0 0 #6A845F;
     cursor: pointer;
+    font-size: 26px;
     transition: transform 0.3s;
 }
 
@@ -506,84 +513,4 @@ button.utility.history-btn {
     transform: scale(1);
     opacity: 1;
     pointer-events: all;
-}
-
-/* Responsive adjustments */
-@media only screen and (orientation: landscape) {
-    .app-container {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-    }
-
-    canvas {
-        max-width: 65%;
-        max-height: 80%;
-    }
-
-    .controls {
-        flex-direction: column;
-        justify-content: space-between;
-        width: 30%;
-        max-height: 80%;
-    }
-
-    ul {
-        flex-direction: column;
-        justify-content: center;
-        height: 60%;
-    }
-
-    ul.sizes {
-        height: auto;
-        flex-direction: row;
-        justify-content: space-around;
-    }
-
-    .toolbar {
-        flex-direction: column;
-        gap: 6px;
-        margin: 4px 0;
-    }
-
-    .tool-item {
-        flex-direction: row;
-        gap: 8px;
-    }
-
-    button.utility {
-        width: 100%;
-        transform: rotate(90deg);
-        transform-origin: center;
-        line-height: 1.5;
-    }
-}
-
-@media only screen and (orientation: portrait) {
-    .app-container {
-        flex-direction: column;
-    }
-
-    canvas {
-        max-width: 90%;
-        max-height: 60%;
-    }
-
-    .controls {
-        flex-direction: column;
-        justify-content: space-between;
-        width: 90%;
-        margin-top: 10px;
-    }
-
-    ul {
-        flex-direction: row;
-        justify-content: space-around;
-    }
-
-    button.utility {
-        width: 150px;
-        transform: rotate(0deg);
-    }
 }
