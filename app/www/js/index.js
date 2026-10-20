@@ -15,42 +15,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Canvas resize ────────────────────────────────────────────────────────
 
-    // The canvas only ever grows, so rotating the phone keeps the whole drawing.
-    var cssWidth = 0;
-    var cssHeight = 0;
+    // The canvas is a fixed portrait "sheet of paper" stuck to the phone: when the
+    // screen rotates, the sheet is rotated back so it keeps covering the screen.
+    var paperWidth = Math.min(window.innerWidth, window.innerHeight);
+    var paperHeight = Math.max(window.innerWidth, window.innerHeight);
+    var dpr = window.devicePixelRatio || 1;
 
-    function resizeCanvas() {
-        var dpr = window.devicePixelRatio || 1;
-        var width = Math.max(cssWidth, window.innerWidth);
-        var height = Math.max(cssHeight, window.innerHeight);
-        if (width === cssWidth && height === cssHeight) return false;
-        cssWidth = width;
-        cssHeight = height;
-
-        var snapshot = document.createElement('canvas');
-        snapshot.width = canvas.width;
-        snapshot.height = canvas.height;
-        snapshot.getContext('2d').drawImage(canvas, 0, 0);
-
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-
-        context.setTransform(1, 0, 0, 1, 0, 0);
-        context.drawImage(snapshot, 0, 0);
-        context.scale(dpr, dpr);
-        return true;
+    function screenAngle() {
+        return (window.screen.orientation && window.screen.orientation.angle) || 0;
     }
 
-    resizeCanvas();
-    window.addEventListener('resize', function () {
-        if (!resizeCanvas()) return;
-        undoStack = [];
-        redoStack = [];
-        undoButton.disabled = true;
-        redoButton.disabled = true;
-    });
+    canvas.style.position = 'fixed';
+    canvas.style.width = paperWidth + 'px';
+    canvas.style.height = paperHeight + 'px';
+    canvas.width = paperWidth * dpr;
+    canvas.height = paperHeight * dpr;
+    context.scale(dpr, dpr);
+
+    function layoutCanvas() {
+        canvas.style.left = (window.innerWidth - paperWidth) / 2 + 'px';
+        canvas.style.top = (window.innerHeight - paperHeight) / 2 + 'px';
+        canvas.style.transform = 'rotate(' + -screenAngle() + 'deg)';
+    }
+
+    layoutCanvas();
+    window.addEventListener('resize', layoutCanvas);
+    if (window.screen.orientation) window.screen.orientation.addEventListener('change', layoutCanvas);
 
     // ── Toast ────────────────────────────────────────────────────────────────
 
@@ -134,11 +124,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getTouchCanvasPos(touch) {
+        // The bounding box of the rotated canvas shares its centre; undo the rotation around it
         var rect = canvas.getBoundingClientRect();
-        var dpr = window.devicePixelRatio || 1;
+        var dx = touch.clientX - (rect.left + rect.width / 2);
+        var dy = touch.clientY - (rect.top + rect.height / 2);
+        var angle = screenAngle() * Math.PI / 180;
         return {
-            x: (touch.clientX - rect.left) * (canvas.width / rect.width) / dpr,
-            y: (touch.clientY - rect.top) * (canvas.height / rect.height) / dpr,
+            x: dx * Math.cos(angle) - dy * Math.sin(angle) + paperWidth / 2,
+            y: dx * Math.sin(angle) + dy * Math.cos(angle) + paperHeight / 2,
         };
     }
 
