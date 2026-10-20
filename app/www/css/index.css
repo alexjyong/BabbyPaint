@@ -506,6 +506,7 @@ button.utility.history-btn {
 }
 
 #lockButton {
+    font-size: 20px;
     bottom: 260px;
 }
 

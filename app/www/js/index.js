@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // The user can cancel the system pinning dialog
                     if (!result.pinned) return;
                     isLocked = true;
-                    lockButton.textContent = 'Unlock app';
+                    lockButton.textContent = '🔓';
                     helpSubFab.classList.remove('expanded');
                     showCustomToast('Tap 4 times quickly to unlock', 2000);
                     setFabState(fabOpen); // recompute sub-fab visibility with new lock state
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             isLocked = false;
                             tapCountLock = 0;
                             lastTapLock = 0;
-                            lockButton.textContent = 'Lock app';
+                            lockButton.textContent = '🔒';
                             showCustomToast('App unlocked', 2000);
                             setFabState(fabOpen); // recompute sub-fab visibility with new lock state
                         })
